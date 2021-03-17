@@ -8,6 +8,7 @@ from tkinter import Frame
 from time import perf_counter
 from ..file_formats.read_file import read_file
 from ..tokenization import split_tokens
+from math import copysign
 
 
 class App(UIComponent):
@@ -41,12 +42,13 @@ class App(UIComponent):
             self.update_display()
         
         elapsed = perf_counter() - start
-        self.frame.after(self.speed_chooser.interval - int(elapsed*1000), self.updateloop)
+        self.frame.after(int((self.speed_chooser.interval - elapsed*1000) / abs(self.buttons.factor)), self.updateloop)
 
     def update_display(self):
-        if self.position < len(self.tokens):
+        newpos = int(self.position + copysign(1, self.buttons.factor))
+        if newpos < len(self.tokens) and newpos > 0:
+            self.position = newpos
             self.display.content = self.tokens[self.position]
-            self.position += 1
 
     def get_file(self, filename):
         self.tokens = ['']
