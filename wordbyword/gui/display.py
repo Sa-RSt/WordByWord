@@ -8,6 +8,8 @@ class Display(UIComponent):
     '''
 
     def __init__(self, tkparent):
+        super(Display, self).__init__()
+
         self._content = ''
         self._contentvar = StringVar()
         self.frame = Frame(tkparent, background='gray')

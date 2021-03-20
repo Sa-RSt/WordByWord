@@ -10,6 +10,7 @@ class Filepicker(UIComponent):
         @param onchange: callable object that will be called when the
         selected filename changes.
         '''
+        super(Filepicker, self).__init__()
 
         self.onchange = onchange
 

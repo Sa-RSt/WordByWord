@@ -26,6 +26,7 @@ class Progress(UIComponent):
         '''
         @param total: The total number of words/tokens.
         '''
+        super(Progress, self).__init__()
 
         self._shown = True
         self.total = total

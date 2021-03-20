@@ -12,6 +12,8 @@ class ButtonsComponent(UIComponent):
         to be called with no arguments when their respective
         buttons are pressed.
         '''
+        super(ButtonsComponent, self).__init__()
+
         self._paused = False
         self._factor = 1
 

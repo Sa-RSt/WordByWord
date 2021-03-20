@@ -5,6 +5,9 @@ from . import UIComponent
 
 class SpeedChooser(UIComponent):
     def __init__(self, tkparent):
+
+        super(SpeedChooser, self).__init__()
+
         self.frame = Frame(tkparent)
 
         Label(self.frame, text='Words per minute: ').grid(row=0, column=0)

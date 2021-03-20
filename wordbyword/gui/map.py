@@ -13,6 +13,8 @@ def _tk_index(idx):
 
 class Map(UIComponent):
     def __init__(self, tkparent):
+        super(Map, self).__init__()
+
         self._current_token = None
         self.frame = Frame(tkparent)
 

@@ -18,6 +18,8 @@ DEFAULT_TEXT = 'The quick brown fox jumped over the lazy dog.'
 
 class App(UIComponent):
     def __init__(self, tkparent):
+        super(App, self).__init__()
+
         self.frame = Frame(tkparent)
 
         self.frame.columnconfigure(1, weight=1)
