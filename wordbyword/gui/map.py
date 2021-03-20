@@ -21,7 +21,7 @@ class Map(UIComponent):
         self.textw.grid(row=0, column=0, sticky='nsew')
 
         self.btn_scroll_to_current = Button(self.frame, text='Go to current word', command=self.on_scroll_to_current)
-        self.btn_scroll_to_current.grid(row=1, column=0, sticky='nsew')
+        self.btn_scroll_to_current.grid(row=1, column=0)
 
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(0, weight=1)
