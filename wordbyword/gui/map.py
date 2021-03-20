@@ -1,4 +1,5 @@
 from . import UIComponent
+from ..tokenization import split_tokens
 from tkinter import Frame
 from tkinter.ttk import Button
 from tkinter.scrolledtext import ScrolledText
@@ -16,9 +17,12 @@ class Map(UIComponent):
         super(Map, self).__init__()
 
         self._current_token = None
+        self._tokens = []
+
         self.frame = Frame(tkparent)
 
-        self.textw = ScrolledText(self.frame, state='disabled')
+        self.textw = ScrolledText(self.frame, state='disabled', cursor='plus')
+        self.textw.bind('<Button-1>', self.on_click)
         self.textw.tag_configure('currentToken', underline=True)
         self.textw.grid(row=0, column=0, sticky='nsew')
 
@@ -41,6 +45,10 @@ class Map(UIComponent):
             self.textw.tag_add('currentToken', *self._current_token_tk_span())
 
     @property
+    def tokens(self):
+        return self._tokens
+
+    @property
     def text(self):
         return self.textw.get('1.0', 'end')
     
@@ -51,12 +59,25 @@ class Map(UIComponent):
         self.textw.delete('1.0', 'end')
         self.textw.insert('1.0', val)
         self.textw.config(state='disabled')
+        self._tokens = split_tokens(val)
 
     def get_tk_widget(self):
         return self.frame
 
     def on_scroll_to_current(self):
         self.textw.see(self._current_token_tk_span()[0])
+    
+    def on_click(self, evt):
+        idx = self.textw.index('@{},{}'.format(evt.x, evt.y))
+        line_s, col_s = idx.split('.')
+        line = int(line_s)
+        col = int(col_s)
+
+        for position, tok in enumerate(self.tokens):
+            if tok.span_lc[0][0] == line and tok.span_lc[0][1] <= col and tok.span_lc[1][1] >= col:
+                self.current_token = tok
+                self.trigger('token-change', position)
+                break
 
     def _current_token_tk_span(self):
         '''

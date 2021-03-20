@@ -42,12 +42,17 @@ class App(UIComponent):
         self.buttons.get_tk_widget().grid(row=2, column=0, columnspan=3)
 
         self.map = Map(self.frame)
+        self.map.on('token-change', self.token_change)
         self.map.get_tk_widget().grid(row=3, column=0, columnspan=3)
 
         self.frame.after(self.speed_chooser.interval, self.updateloop)
 
         self.set_contents(DEFAULT_TEXT)
         self.position = 0
+    
+    def token_change(self, position):
+        self.position = position - 1  # Position will increase by 1 on update.
+        self.update_display()
     
     def updateloop(self):
         start = perf_counter()
@@ -73,9 +78,9 @@ class App(UIComponent):
         self.set_contents(content)
     
     def set_contents(self, contents):
-        self.tokens = split_tokens(contents)
+        self.map.text = contents       # Map tokenizes the text automatically
+        self.tokens = self.map.tokens  #
         self.progress.total = len(self.tokens)
-        self.map.text = contents
         self.position = -1  # self.update_display increments the position, so it will be set to 0
                             # after the first update.
         self.buttons.paused = True
