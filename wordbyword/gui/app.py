@@ -3,6 +3,7 @@ from .display import Display
 from .buttons import ButtonsComponent
 from .filepicker import Filepicker
 from .speedchooser import SpeedChooser
+from .map import Map
 from . import UIComponent
 from tkinter import Frame
 from time import perf_counter
@@ -16,7 +17,7 @@ class App(UIComponent):
         self.frame = Frame(tkparent)
 
         self.frame.columnconfigure(0, weight=1)
-        self.frame.rowconfigure(1, weight=1)
+        self.frame.rowconfigure(3, weight=1)
 
         self.filepicker = Filepicker(self.frame, self.get_file)
         self.filepicker.get_tk_widget().grid(row=0, column=0, sticky='w')
@@ -30,9 +31,12 @@ class App(UIComponent):
         self.buttons = ButtonsComponent(self.frame)
         self.buttons.get_tk_widget().grid(row=2, column=0, columnspan=2)
 
+        self.map = Map(self.frame)
+        self.map.get_tk_widget().grid(row=3, column=0, columnspan=2)
+
         self.frame.after(self.speed_chooser.interval, self.updateloop)
 
-        self.tokens = 'The quick brown fox jumps over the lazy dog.'.split()
+        self.set_contents('The quick brown fox jumped over the lazy dog.')
         self.position = 0
     
     def updateloop(self):
@@ -46,14 +50,21 @@ class App(UIComponent):
 
     def update_display(self):
         newpos = int(self.position + copysign(1, self.buttons.factor))
-        if newpos < len(self.tokens) and newpos > 0:
+        if newpos < len(self.tokens) and newpos >= 0:
             self.position = newpos
-            self.display.content = self.tokens[self.position]
+            tok = self.tokens[self.position]
+            self.display.content = tok.word
+            self.map.current_token = tok
 
     def get_file(self, filename):
-        self.tokens = ['']
-        self.tokens = split_tokens(read_file(filename))  # TODO handle exceptions
-        self.position = 0
+        content = read_file(filename)        # TODO handle exceptions
+        self.set_contents(content)
+    
+    def set_contents(self, contents):
+        self.tokens = split_tokens(contents)
+        self.map.text = contents
+        self.position = -1  # self.update_display increments the position, so it will be set to 0
+                            # after the first update.
         self.buttons.paused = True
         self.update_display()
 
