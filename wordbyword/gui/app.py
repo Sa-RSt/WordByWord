@@ -5,6 +5,7 @@ from .filepicker import Filepicker
 from .speedchooser import SpeedChooser
 from .map import Map
 from .progress import Progress
+from .message_dialog import MessageDialog
 from . import UIComponent
 from tkinter import Frame
 from time import perf_counter
@@ -74,9 +75,11 @@ class App(UIComponent):
             self.progress.update(self.speed_chooser.interval)
 
     def get_file(self, filename):
+        mbox = MessageDialog(self.get_tk_widget(), 'Word by Word Reader: Loading...', 'Loading. Please wait...')
         content = read_file(filename)        # TODO handle exceptions
         self.set_contents(content)
-    
+        mbox.destroy()
+
     def set_contents(self, contents):
         self.map.text = contents       # Map tokenizes the text automatically
         self.tokens = self.map.tokens  #
