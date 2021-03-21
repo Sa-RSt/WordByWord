@@ -12,12 +12,6 @@ def position_to_line_and_col(string, pos):
     to an index tuple in the form of (line, column). If the character
     at the given position is a newline character, ValueError is raised.
     '''
-    try:
-        if string[pos] == '\n':
-            raise ValueError('Character at position {} is a newline character.'.format(pos))
-    except IndexError:
-        pass
-
     until_pos = string[:pos]
     line = until_pos.count('\n') + 1
 
