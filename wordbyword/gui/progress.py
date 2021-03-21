@@ -103,7 +103,9 @@ class Progress(UIComponent):
             
             remaining = self.total - self.current
             words_per_second = 1000/interval
-            eta = remaining / words_per_second
+            # Since words with punctuation are displayed 1.75x longer,
+            # multiplying by 1.3 will give us a rough estimate.
+            eta = 1.3 * remaining / words_per_second
 
             self.lbl_eta.config(text='ETA: {}'.format(_timeformat(eta)))
 

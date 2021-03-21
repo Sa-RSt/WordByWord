@@ -12,14 +12,26 @@ from time import perf_counter
 from ..file_formats.read_file import read_file
 from ..tokenization import split_tokens
 from math import copysign
+from re import compile
 
 
 DEFAULT_TEXT = 'The quick brown fox jumped over the lazy dog.'
+NON_WORD_START = compile(r'^\W')
+NON_WORD_END = compile(r'\W$')
 
+
+def has_punctuation(word):
+    '''
+    Check if the given word has any
+    punctuation characters.
+    '''
+    return NON_WORD_END.search(word) or NON_WORD_START.search(word)
 
 class App(UIComponent):
     def __init__(self, tkparent):
         super(App, self).__init__()
+
+        self._interval_multiplier = 1
 
         self.frame = Frame(tkparent)
 
@@ -59,10 +71,10 @@ class App(UIComponent):
         start = perf_counter()
 
         if not self.buttons.paused:
-            self.update_display()
+            self._interval_multiplier = self.update_display()
         
         elapsed = perf_counter() - start
-        self.frame.after(int((self.speed_chooser.interval - elapsed*1000) / abs(self.buttons.factor)), self.updateloop)
+        self.frame.after(int(self._interval_multiplier * (self.speed_chooser.interval - elapsed*1000) / abs(self.buttons.factor)), self.updateloop)
 
     def update_display(self):
         newpos = int(self.position + copysign(1, self.buttons.factor))
@@ -73,6 +85,10 @@ class App(UIComponent):
             self.display.content = tok.word
             self.map.current_token = tok
             self.progress.update(self.speed_chooser.interval)
+
+            if has_punctuation(tok.word):
+                return 1.75
+        return 1
 
     def get_file(self, filename):
         mbox = MessageDialog(self.get_tk_widget(), 'Word by Word Reader: Loading...', 'Loading. Please wait...')
