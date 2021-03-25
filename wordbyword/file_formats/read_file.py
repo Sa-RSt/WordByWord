@@ -1,7 +1,9 @@
 from .txt import TXTFileReader
+from .pdf import PDFFileReader
 
 reader_order = [
-    TXTFileReader()
+    TXTFileReader(),
+    PDFFileReader()
 ]
 
 def read_file(filename):
