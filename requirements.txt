@@ -3,4 +3,5 @@ chardet==4.0.0
 cryptography==3.4.7
 pdfminer.six==20201018
 pycparser==2.20
+six==1.15.0
 sortedcontainers==2.3.0
