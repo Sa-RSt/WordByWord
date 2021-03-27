@@ -2,23 +2,9 @@ import re
 from collections import namedtuple
 
 
-Token = namedtuple('Token', 'span span_lc word')
+Token = namedtuple('Token', 'span word')
 
 token_split_pat = re.compile(r'\S+')
-
-def position_to_line_and_col(string, pos):
-    '''
-    Convert a position within the given string (between 0 and len(string))
-    to an index tuple in the form of (line, column). If the character
-    at the given position is a newline character, ValueError is raised.
-    '''
-    until_pos = string[:pos]
-    line = until_pos.count('\n') + 1
-
-    text_line = until_pos[until_pos.rfind('\n') + 1:]
-    column = len(text_line)
-
-    return line, column
 
 def split_tokens(text):
     '''
@@ -35,7 +21,6 @@ def split_tokens(text):
         L.append(
             Token(
                 span=(mstart, mend),
-                span_lc=(position_to_line_and_col(text, mstart), position_to_line_and_col(text, mend)),
                 word=match.group(0)
             )
         )

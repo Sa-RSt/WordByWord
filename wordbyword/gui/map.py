@@ -4,13 +4,24 @@ from tkinter import Frame
 from tkinter.ttk import Button
 from tkinter.scrolledtext import ScrolledText
 
+
 def _tk_index(idx):
     '''
-    Convert a (line, column) tuple into a
-    tkinter-suitable 'line.column' string.
+    Convert a single integer index to a tkinter index string.
     '''
-    return '{}.{}'.format(idx[0], idx[1])
+    return '1.0 + {}c'.format(idx)
 
+def _to_int_index(text, line, col):
+    '''
+    Convert a line and column index to a single integer index.
+    '''
+    current_line = 1
+    for idx, char in enumerate(text):
+        if current_line == line:
+            return idx + col
+        if char == '\n':
+            current_line += 1
+    raise ValueError('Invalid line', line)
 
 class Map(UIComponent):
     def __init__(self, tkparent):
@@ -72,9 +83,10 @@ class Map(UIComponent):
         line_s, col_s = idx.split('.')
         line = int(line_s)
         col = int(col_s)
+        int_idx = _to_int_index(self.text, line, col)
 
         for position, tok in enumerate(self.tokens):
-            if tok.span_lc[0][0] == line and tok.span_lc[0][1] <= col and tok.span_lc[1][1] >= col:
+            if int_idx in range(tok.span[0], tok.span[1]):
                 self.current_token = tok
                 self.trigger('token-change', position)
                 break
@@ -85,4 +97,4 @@ class Map(UIComponent):
         in the form (start index, end index). The indices
         are suitable for use in tkinter.
         '''
-        return _tk_index(self._current_token.span_lc[0]), _tk_index(self._current_token.span_lc[1])
+        return _tk_index(self._current_token.span[0]), _tk_index(self._current_token.span[1])

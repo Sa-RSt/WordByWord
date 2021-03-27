@@ -28,7 +28,7 @@ class Filepicker(UIComponent):
     
     def onpick(self):
         filename = askopenfilename(filetypes=[
-            ('Files', '.txt, .pdf'),
+            ('Files', '.txt; .pdf'),
             ('Text files', '.txt'),
             ('PDF files', '.pdf')
         ])
