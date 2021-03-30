@@ -1,4 +1,10 @@
 from abc import ABC, abstractmethod
+import os
+
+def check_extension(filename, ext):
+    '''Convenience function to check if the given filename has the given extension.'''
+    _, fext = os.path.splitext(filename)
+    return fext.lower() == ext
 
 class FileReader(ABC):
     '''

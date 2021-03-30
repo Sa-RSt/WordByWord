@@ -1,5 +1,4 @@
-import os
-from . import FileReader
+from . import FileReader, check_extension
 
 class TXTFileReader(FileReader):
     '''File reader that deals with plain text (.txt) files.'''
@@ -8,8 +7,7 @@ class TXTFileReader(FileReader):
         pass
 
     def read(self, filename):
-        _, ext = os.path.splitext(filename)
-        if ext.lower() != '.txt':
+        if not check_extension(filename, '.txt'):
             return None
         with open(filename, 'r') as file:
             return file.read()

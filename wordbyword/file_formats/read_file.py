@@ -1,15 +1,17 @@
 from .txt import TXTFileReader
 from .pdf import PDFFileReader
+from .wbwr import WBWRFileReader
 
 reader_order = [
     TXTFileReader(),
-    PDFFileReader()
+    PDFFileReader(),
+    WBWRFileReader(),
 ]
 
 def read_file(filename):
     '''
     Try to read the file with every FileReader, in the order
-    specified by the 'reader_order' list. Returns the text result
+    specified by the 'reader_order' list. Returns the result
     of the first FileReader that succeeds. If the file format is not
     recognized by any of the readers, return None.
     '''

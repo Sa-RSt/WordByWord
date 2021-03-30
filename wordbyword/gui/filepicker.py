@@ -5,14 +5,8 @@ from tkinter.ttk import Button, Label
 
 
 class Filepicker(UIComponent):
-    def __init__(self, tkparent, onchange):
-        '''
-        @param onchange: callable object that will be called when the
-        selected filename changes.
-        '''
+    def __init__(self, tkparent):
         super(Filepicker, self).__init__()
-
-        self.onchange = onchange
 
         self.frame = Frame(tkparent)
 
@@ -22,16 +16,25 @@ class Filepicker(UIComponent):
         self.filename_entry = Label(self.frame)
         self.filename_entry.grid(row=0, column=1)
         self.frame.columnconfigure(1, weight=1)
-    
+
+    @property
+    def filename(self):
+        return self.filename_entry['text']
+
+    @filename.setter
+    def filename(self, val):
+        self.filename_entry.config(text=val)
+        self.trigger('file-change', val)
+
     def get_tk_widget(self):
         return self.frame
     
     def onpick(self):
         filename = askopenfilename(filetypes=[
-            ('Files', '.txt; .pdf'),
+            ('Files', '.txt; .pdf; .wbwr'),
             ('Text files', '.txt'),
-            ('PDF files', '.pdf')
+            ('PDF files', '.pdf'),
+            ('Word by Word Reader progress files', '.wbwr')
         ])
         if filename:
-            self.filename_entry.config(text=filename)
-            self.onchange(filename)
+            self.filename = filename

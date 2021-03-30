@@ -1,19 +1,22 @@
-from .window import create_main_window
-from .display import Display
-from .buttons import ButtonsComponent
-from .filepicker import Filepicker
-from .speedchooser import SpeedChooser
-from .map import Map
-from .progress import Progress
-from .message_dialog import MessageDialog
-from . import UIComponent
-from tkinter import Frame
-from time import perf_counter
-from ..file_formats.read_file import read_file
-from ..tokenization import split_tokens
 from math import copysign
 from re import compile
+from time import perf_counter
+from tkinter import Frame
+from tkinter.filedialog import asksaveasfilename
 
+from ..file_formats import check_extension
+from ..file_formats.read_file import read_file
+from ..file_formats.wbwr import WBWRFile
+from ..tokenization import split_tokens
+from . import UIComponent
+from .buttons import ButtonsComponent
+from .display import Display
+from .filepicker import Filepicker
+from .map import Map
+from .message_dialog import MessageDialog
+from .progress import Progress
+from .speedchooser import SpeedChooser
+from .window import create_main_window
 
 DEFAULT_TEXT = 'The quick brown fox jumped over the lazy dog.'
 NON_WORD_START = compile(r'^\W')
@@ -39,11 +42,13 @@ class App(UIComponent):
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(3, weight=1)
 
-        self.filepicker = Filepicker(self.frame, self.get_file)
+        self.filepicker = Filepicker(self.frame)
         self.filepicker.get_tk_widget().grid(row=0, column=0, sticky='nw')
+        self.filepicker.on('file-change', self.get_file)
 
         self.progress = Progress(self.frame, len(split_tokens(DEFAULT_TEXT)))
         self.progress.get_tk_widget().grid(row=0, column=1, sticky='nsew')
+        self.progress.on('save-progress', self.save_progress)
 
         self.speed_chooser = SpeedChooser(self.frame)
         self.speed_chooser.get_tk_widget().grid(row=0, column=2, sticky='ne')
@@ -93,7 +98,13 @@ class App(UIComponent):
     def get_file(self, filename):
         mbox = MessageDialog(self.get_tk_widget(), 'Word by Word Reader: Loading...', 'Loading. Please wait...')
         content = read_file(filename)        # TODO handle exceptions
-        self.set_contents(content)
+        if content is not None:
+            if isinstance(content, str):
+                self.set_contents(content)
+            elif isinstance(content, WBWRFile):
+                self.set_contents(content.text)
+                self.position = content.current_word
+                self.update_display()
         mbox.destroy()
 
     def set_contents(self, contents):
@@ -104,6 +115,24 @@ class App(UIComponent):
                             # after the first update.
         self.buttons.paused = True
         self.update_display()
+    
+    def save_progress(self):
+        fname = self.filepicker.filename
+        if check_extension(fname, '.wbwr'):
+            self.create_wbwr(fname)
+            self.progress.trigger('progress-saved')
+        else:
+            output = asksaveasfilename(filetypes=[('Word by Word Reader progress files', '.wbwr')], defaultextension='.wbwr')
+            if output:
+                self.create_wbwr(output)
+                self.filepicker.filename = output
+                self.save_progress()
+
+    def create_wbwr(self, fname):
+        f = WBWRFile(fname)
+        f.current_word = max(self.position - 1, 0)  # Position will be incremented on each update
+        f.text = self.map.text
+        return f
 
     def get_tk_widget(self):
         return self.frame

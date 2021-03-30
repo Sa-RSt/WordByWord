@@ -1,11 +1,7 @@
-import os
-
 import pdfminer.high_level
 from pdfminer.pdftypes import PSException
 
-from . import FileReader
-
-import inspect
+from . import FileReader, check_extension
 
 class PDFFileReader(FileReader):
     '''File reader that reads from PDF files.'''
@@ -14,8 +10,7 @@ class PDFFileReader(FileReader):
         pass
 
     def read(self, filename):
-        _, ext = os.path.splitext(filename)
-        if ext.lower() != '.pdf':
+        if not check_extension(filename, '.pdf'):
             return None
 
         return pdfminer.high_level.extract_text(filename)

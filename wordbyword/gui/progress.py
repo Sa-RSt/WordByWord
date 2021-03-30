@@ -49,7 +49,13 @@ class Progress(UIComponent):
         self.lbl_eta.grid(row=1, column=1, sticky='nsew')
 
         self.toggleframe.grid(row=1, column=0)
+
+        self.btn_save = Button(self.frame, text='Save progress', command=lambda: self.trigger('save-progress'))
+        self.btn_save.grid(row=2, column=0)
+
         self.frame.rowconfigure(1, weight=1)
+
+        self.on('progress-saved', self.progress_saved)
 
     @property
     def shown(self):
@@ -109,6 +115,9 @@ class Progress(UIComponent):
 
             self.lbl_eta.config(text='ETA: {}'.format(_timeformat(eta)))
 
+    def progress_saved(self):
+        self.btn_save.config(text='Successfully saved!')
+        self.frame.after(500, lambda: self.btn_save.config(text='Save progress'))
 
     def get_tk_widget(self):
         return self.frame
