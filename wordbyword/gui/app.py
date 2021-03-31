@@ -43,16 +43,20 @@ class App(UIComponent):
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(3, weight=1)
 
+        self.overflow_frame = Frame(self.frame)
+
+        self.progress = Progress(self.overflow_frame, len(split_tokens(DEFAULT_TEXT)))
+        self.progress.get_tk_widget().grid(row=0, column=1, sticky='nw')
+        self.progress.on('save-progress', self.save_progress)
+
+        self.speed_chooser = SpeedChooser(self.overflow_frame)
+        self.speed_chooser.get_tk_widget().grid(row=0, column=2, sticky='ne')
+
+        self.overflow_frame.grid(row=0, column=1, sticky='ne')
+
         self.filepicker = Filepicker(self.frame)
         self.filepicker.get_tk_widget().grid(row=0, column=0, sticky='nw')
         self.filepicker.on('file-change', self.get_file)
-
-        self.progress = Progress(self.frame, len(split_tokens(DEFAULT_TEXT)))
-        self.progress.get_tk_widget().grid(row=0, column=1, sticky='nsew')
-        self.progress.on('save-progress', self.save_progress)
-
-        self.speed_chooser = SpeedChooser(self.frame)
-        self.speed_chooser.get_tk_widget().grid(row=0, column=2, sticky='ne')
 
         self.display = Display(self.frame)
         self.display.get_tk_widget().grid(row=1, column=0, columnspan=3)
