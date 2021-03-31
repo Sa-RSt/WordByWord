@@ -3,6 +3,7 @@ from re import compile
 from time import perf_counter
 from tkinter import Frame
 from tkinter.filedialog import asksaveasfilename
+from tkinter.messagebox import showerror
 
 from ..file_formats import check_extension
 from ..file_formats.read_file import read_file
@@ -96,16 +97,25 @@ class App(UIComponent):
         return 1
 
     def get_file(self, filename):
+        if not filename:
+            return
         mbox = MessageDialog(self.get_tk_widget(), 'Word by Word Reader: Loading...', 'Loading. Please wait...')
-        content = read_file(filename)        # TODO handle exceptions
-        if content is not None:
-            if isinstance(content, str):
-                self.set_contents(content)
-            elif isinstance(content, WBWRFile):
-                self.set_contents(content.text)
-                self.position = content.current_word
-                self.update_display()
-        mbox.destroy()
+        try:
+            try:
+                content = read_file(filename)
+            except Exception as exc:
+                self.filepicker.filename = ''
+                showerror('Word by Word Reader - Error', 'We are sorry for the inconvenience. Could not read file. Error details: ' + str(exc))
+                return
+            if content is not None:
+                if isinstance(content, str):
+                    self.set_contents(content)
+                elif isinstance(content, WBWRFile):
+                    self.set_contents(content.text)
+                    self.position = content.current_word
+                    self.update_display()
+        finally:
+            mbox.destroy()
 
     def set_contents(self, contents):
         self.map.text = contents       # Map tokenizes the text automatically
