@@ -18,7 +18,7 @@ class Display(UIComponent):
         self._iframe.grid(row=0, column=0, padx=2, pady=2, sticky='nsew')
         style = Style(self.frame)
         style.configure('Display.TLabel', background='white', foreground='black')
-        self._lbl = Label(self._iframe, textvariable=self._contentvar, style='Display.TLabel', font=('', 48), width=20)
+        self._lbl = Label(self._iframe, textvariable=self._contentvar, style='Display.TLabel', font=('', 48), width=20, anchor='center')
         self._lbl.pack(anchor='center')
 
     @property

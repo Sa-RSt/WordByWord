@@ -6,9 +6,12 @@ from tkinter.ttk import Button, Label
 from . import UIComponent
 
 
+LABEL_WIDTH = 50
+
+
 def _file_shorten(path, n):
     '''
-    Shortens a file path for displaying to the user,
+    Shortens a file path to display it to the user,
     so that it contains a maximum of n characters.
     '''
     filename = os.path.basename(path)
@@ -17,7 +20,7 @@ def _file_shorten(path, n):
     name, ext = os.path.splitext(filename)
     reserved = 2+len(ext)
     if reserved >= n:
-        raise ValueError('Impossible to shorten filename: extension length + 2 is larger than n')
+        return '........'
     namestop = n - reserved
     name_trunc = name[:namestop]
     return name_trunc + '..' + ext
@@ -32,7 +35,7 @@ class Filepicker(UIComponent):
         self.btn_pick = Button(self.frame, text='Pick a file...', command=self.onpick)
         self.btn_pick.grid(row=0, column=0)
 
-        self.filename_entry = Label(self.frame, width=50)
+        self.filename_entry = Label(self.frame, width=LABEL_WIDTH)
         self.filename_entry.grid(row=0, column=1)
 
     @property
@@ -42,7 +45,11 @@ class Filepicker(UIComponent):
     @filename.setter
     def filename(self, val):
         self._filename = val
-        self.filename_entry.config(text=_file_shorten(val, 30))
+        display_text = _file_shorten(val, 30)
+        self.filename_entry.config(
+            text=display_text,
+            width=50 - LABEL_WIDTH  # If the width is not fixed, the widget may vary in size whenever the text changes
+        )
         self.trigger('file-change', val)
 
     def get_tk_widget(self):

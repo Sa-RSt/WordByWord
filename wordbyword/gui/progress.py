@@ -32,7 +32,7 @@ class Progress(UIComponent):
         self.total = total
         self._last_interval = 0
         self.current = 0
-        self.frame = Frame(tkparent)
+        self.frame = Frame(tkparent, width=175, height=95)
 
         self.btn_toggle = Button(self.frame, text='Hide progress', command=self.on_toggle)
         self.btn_toggle.grid(row=0, column=0)
@@ -56,6 +56,8 @@ class Progress(UIComponent):
         self.frame.rowconfigure(1, weight=1)
 
         self.on('progress-saved', self.progress_saved)
+
+        self.frame.grid_propagate(False)
 
     @property
     def shown(self):
@@ -104,7 +106,7 @@ class Progress(UIComponent):
         self._last_interval = interval
         if self.shown:
             percent = 100*(self.current+1)/self.total
-            self.lbl_progdata.config(text='{}/{} ({:.1f}%)'.format(self.current+1, self.total, percent))
+            self.lbl_progdata.config(text='({:.1f}%)'.format(percent))
             self.progbar.config(value=int(percent))
             
             remaining = self.total - self.current
