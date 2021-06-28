@@ -3,7 +3,7 @@ from re import compile
 from time import perf_counter
 from tkinter import Frame
 from tkinter.filedialog import asksaveasfilename
-from tkinter.messagebox import showerror
+from tkinter.messagebox import showerror, askyesnocancel
 
 from ..file_formats import check_extension
 from ..file_formats.read_file import read_file
@@ -32,11 +32,12 @@ def has_punctuation(word):
     return NON_WORD_END.search(word) or NON_WORD_START.search(word)
 
 class App(UIComponent):
-    def __init__(self, tkparent):
+    def __init__(self, tkparent, root_window):
         super(App, self).__init__()
 
         self._interval_multiplier = 1
 
+        self.root_window = root_window
         self.frame = Frame(tkparent)
 
         self.frame.columnconfigure(1, weight=1)
@@ -70,6 +71,8 @@ class App(UIComponent):
 
         self.set_contents(DEFAULT_TEXT)
         self.position = 0
+
+        self.root_window.protocol('WM_DELETE_WINDOW', self.on_quit_button)
     
     def token_change(self, position):
         self.position = position - 1  # Position will increase by 1 on update.
@@ -145,6 +148,32 @@ class App(UIComponent):
         f.current_word = max(self.position - 1, 0)  # Position will be incremented on each update
         f.text = self.map.text
         return f
+
+    def on_quit_button(self):
+        fname = self.filepicker.filename
+
+        if not fname.strip():
+            self.root_window.destroy()
+            return None
+
+        if not check_extension(fname, '.wbwr'):
+            self.save_or_confirm_quit()
+            return None
+        
+        f = WBWRFile(self.filepicker.filename)
+        if f.current_word != self.position - 1:
+            self.save_or_confirm_quit()
+            return None
+        
+        self.root_window.destroy()
+
+    def save_or_confirm_quit(self):
+        ans = askyesnocancel('Save Progress - Word by Word reader', 'Would you like to save your progress, so you can resume reading later?')
+        if ans is True:
+            self.save_progress()
+            self.root_window.destroy()
+        elif ans is False:
+            self.root_window.destroy()
 
     def get_tk_widget(self):
         return self.frame
