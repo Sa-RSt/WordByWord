@@ -104,7 +104,7 @@ class App(UIComponent):
     def get_file(self, filename):
         if not filename:
             return
-        mbox = MessageDialog(self.get_tk_widget(), 'Word by Word Reader: Loading...', 'Loading. Please wait...')
+        mbox = MessageDialog(self.get_tk_widget(), 'Word by Word Reader: Loading...', 'Converting file. Please wait. This may take several minutes...')
         try:
             try:
                 content = read_file(filename)
