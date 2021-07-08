@@ -3,6 +3,11 @@ from tkinter import Frame, Label
 from tkinter.ttk import Button, Progressbar
 
 
+FRAME_WIDTH = 175
+FRAME_HEIGHT = 95  # Height normally
+FRAME_HEIGHT_COLLAPSED = 56  # Height when progress is hidden by the user
+
+
 def _timeformat(seconds):
     '''
     Returns the given time, in seconds, formated as 'XXh YYm ZZs'.
@@ -32,7 +37,7 @@ class Progress(UIComponent):
         self.total = total
         self._last_interval = 0
         self.current = 0
-        self.frame = Frame(tkparent, width=175, height=95)
+        self.frame = Frame(tkparent, width=FRAME_WIDTH, height=FRAME_HEIGHT)
 
         self.btn_toggle = Button(self.frame, text='Hide progress', command=self.on_toggle)
         self.btn_toggle.grid(row=0, column=0)
@@ -93,6 +98,10 @@ class Progress(UIComponent):
 
     def on_toggle(self):
         self.shown = not self.shown
+        if self.shown:
+            self.frame.config(height=FRAME_HEIGHT)
+        else:
+            self.frame.config(height=FRAME_HEIGHT_COLLAPSED)
 
     def update(self, interval):
         '''
