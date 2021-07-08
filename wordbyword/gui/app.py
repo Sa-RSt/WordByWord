@@ -52,6 +52,7 @@ class App(UIComponent):
 
         self.speed_chooser = SpeedChooser(self.frame)
         self.speed_chooser.get_tk_widget().grid(row=0, column=2, sticky='ne')
+        self.speed_chooser.on('speed-change', self.on_speed_change)
 
         self.filepicker = Filepicker(self.frame)
         self.filepicker.get_tk_widget().grid(row=0, column=0, sticky='nw')
@@ -148,6 +149,9 @@ class App(UIComponent):
         f.current_word = max(self.position - 1, 0)  # Position will be incremented on each update
         f.text = self.map.text
         return f
+
+    def on_speed_change(self):
+        self.progress.update(self.speed_chooser.interval)
 
     def on_quit_button(self):
         fname = self.filepicker.filename

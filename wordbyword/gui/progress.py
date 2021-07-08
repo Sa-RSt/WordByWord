@@ -97,8 +97,6 @@ class Progress(UIComponent):
     def update(self, interval):
         '''
         Update the progress UI.
-        This method should be called periodically,
-        inside a loop.
 
         @param interval: The interval at which the display is being updated, in milliseconds.
         '''

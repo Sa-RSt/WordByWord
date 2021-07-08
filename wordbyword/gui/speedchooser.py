@@ -12,15 +12,19 @@ class SpeedChooser(UIComponent):
 
         Label(self.frame, text='Words per minute: ').grid(row=0, column=0)
 
-        value_display_var = IntVar()
-        value_display_var.set(300)
+        self.value_display_var = IntVar()
+        self.value_display_var.set(300)
 
-        self.scale = Scale(self.frame, from_=60, to=600, command=lambda val: value_display_var.set(int(float(val))))
+        self.scale = Scale(self.frame, from_=60, to=600, command=self._command)
         self.scale.set(300)
         self.scale.grid(row=0, column=1)
 
-        Label(self.frame, textvariable=value_display_var).grid(row=0, column=2)
+        Label(self.frame, textvariable=self.value_display_var).grid(row=0, column=2)
     
+    def _command(self, val):
+        self.value_display_var.set(int(float(val)))
+        self.trigger('speed-change')
+
     @property
     def interval(self):
         '''
