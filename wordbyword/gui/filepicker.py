@@ -32,7 +32,7 @@ class Filepicker(UIComponent):
 
         self.frame = Frame(tkparent)
 
-        self.btn_pick = Button(self.frame, text='Pick a file...', command=self.onpick)
+        self.btn_pick = Button(self.frame, text='Pick a file (.PDF or .TXT)...', command=self.onpick)
         self.btn_pick.grid(row=0, column=0)
 
         self.filename_entry = Label(self.frame, width=LABEL_WIDTH)
