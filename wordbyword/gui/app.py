@@ -32,7 +32,7 @@ def has_punctuation(word):
     return NON_WORD_END.search(word) or NON_WORD_START.search(word)
 
 class App(UIComponent):
-    def __init__(self, tkparent, root_window):
+    def __init__(self, tkparent, root_window, filename):
         super(App, self).__init__()
 
         self._interval_multiplier = 1
@@ -74,6 +74,10 @@ class App(UIComponent):
         self.position = 0
 
         self.root_window.protocol('WM_DELETE_WINDOW', self.on_quit_button)
+
+
+        if filename is not None:
+            self.filepicker.filename = filename
     
     def token_change(self, position):
         self.position = position - 1  # Position will increase by 1 on update.
