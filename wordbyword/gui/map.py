@@ -3,6 +3,25 @@ from ..tokenization import split_tokens
 from tkinter import Frame
 from tkinter.ttk import Button
 from tkinter.scrolledtext import ScrolledText
+from tkinter.simpledialog import askstring
+
+
+def _findall(needle, haystack):
+    '''
+    Yield the indexes all occurences of the substring <needle>
+    in the string <haystack>, from left to right
+    '''
+    accumulator = 0
+    if not needle or not haystack:
+        return
+    idx = haystack.find(needle)
+    while idx != -1:
+        idx = haystack.find(needle)
+        if idx == -1:
+            return None
+        yield idx + accumulator
+        accumulator += idx + len(needle)
+        haystack = haystack[idx+len(needle):]
 
 
 def _tk_index(idx):
@@ -35,10 +54,13 @@ class Map(UIComponent):
         self.textw = ScrolledText(self.frame, state='disabled', cursor='plus')
         self.textw.bind('<Button-1>', self.on_click)
         self.textw.tag_configure('currentToken', underline=True)
-        self.textw.grid(row=0, column=0, sticky='nsew')
+        self.textw.grid(row=0, column=0, columnspan=2, sticky='nsew')
 
         self.btn_scroll_to_current = Button(self.frame, text='Go to current word', command=self.on_scroll_to_current)
-        self.btn_scroll_to_current.grid(row=1, column=0)
+        self.btn_scroll_to_current.grid(row=1, column=0, sticky='w')
+        
+        self.btn_find = Button(self.frame, text='Go to specific word...', command=self.on_find)
+        self.btn_find.grid(row=1, column=1, sticky='e')
 
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(0, weight=1)
@@ -77,6 +99,27 @@ class Map(UIComponent):
 
     def on_scroll_to_current(self):
         self.textw.see(self._current_token_tk_span()[0])
+
+    def get_token_by_character_index(self, int_idx):
+        for position, tok in enumerate(self.tokens):
+            if int_idx in range(tok.span[0], tok.span[1]):
+                return (tok, position)
+
+    def on_find(self):
+        occurences = None
+        current = 0
+        haystack = self.text.lower()
+        old_needle = ''
+        while 1:
+            needle = askstring('Find | Word by Word Reader', 'Search or press ENTER to jump to next occurence:', initialvalue=old_needle).lower()
+            if occurences is None or needle != old_needle:
+                current = 0
+                occurences = [x for x in _findall(needle, haystack)]
+            if needle == old_needle:
+                current += 1
+            self.current_token, _ = self.get_token_by_character_index(occurences[current])
+            self.on_scroll_to_current()
+            old_needle = needle
     
     def on_click(self, evt):
         idx = self.textw.index('@{},{}'.format(evt.x, evt.y))
@@ -84,12 +127,9 @@ class Map(UIComponent):
         line = int(line_s)
         col = int(col_s)
         int_idx = _to_int_index(self.text, line, col)
-
-        for position, tok in enumerate(self.tokens):
-            if int_idx in range(tok.span[0], tok.span[1]):
-                self.current_token = tok
-                self.trigger('token-change', position)
-                break
+        self.current_token, position = self.get_token_by_character_index(int_idx)
+        self.trigger('token-change', position)
+        
 
     def _current_token_tk_span(self):
         '''
