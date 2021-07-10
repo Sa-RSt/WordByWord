@@ -4,6 +4,13 @@ from string import whitespace
 
 from . import FileReader, check_extension
 
+
+whitespace_excluding_form_feed = ''
+for c in whitespace:
+    if c != '\f':
+        whitespace_excluding_form_feed += c
+
+
 class PDFFileReader(FileReader):
     '''File reader that reads from PDF files.'''
 
@@ -15,7 +22,7 @@ class PDFFileReader(FileReader):
             return None
 
         raw = pdfminer.high_level.extract_text(filename)
-        for char in whitespace:
+        for char in whitespace_excluding_form_feed:
             while char + char in raw:
                 raw = raw.replace(char + char, char)
-        return raw
+        return raw.lstrip(whitespace_excluding_form_feed).rstrip()

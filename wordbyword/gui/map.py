@@ -3,7 +3,8 @@ from ..tokenization import split_tokens
 from tkinter import Frame
 from tkinter.ttk import Button
 from tkinter.scrolledtext import ScrolledText
-from tkinter.simpledialog import askstring
+from tkinter.simpledialog import askstring, askinteger
+from string import whitespace
 
 
 def _findall(needle, haystack):
@@ -54,13 +55,16 @@ class Map(UIComponent):
         self.textw = ScrolledText(self.frame, state='disabled', cursor='plus')
         self.textw.bind('<Button-1>', self.on_click)
         self.textw.tag_configure('currentToken', underline=True)
-        self.textw.grid(row=0, column=0, columnspan=2, sticky='nsew')
+        self.textw.grid(row=0, column=0, columnspan=3, sticky='nsew')
 
         self.btn_scroll_to_current = Button(self.frame, text='Go to current word', command=self.on_scroll_to_current)
         self.btn_scroll_to_current.grid(row=1, column=0, sticky='w')
         
-        self.btn_find = Button(self.frame, text='Go to specific word...', command=self.on_find)
+        self.btn_find = Button(self.frame, text='Go to specific word (Find)...', command=self.on_find)
         self.btn_find.grid(row=1, column=1, sticky='e')
+
+        self.btn_page = Button(self.frame, text='Jump to page...', command=self.on_go_to_page)
+        self.btn_page.grid(row=1, column=2, sticky='e')
 
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(0, weight=1)
@@ -121,6 +125,21 @@ class Map(UIComponent):
             self.on_scroll_to_current()
             old_needle = needle
     
+    def on_go_to_page(self):
+        text = self.text
+        pagestarters = [0] + [x for x in _findall('\f', text)]
+        pagecount = len(pagestarters)
+        page = askinteger('Go to Page | Word by Word Reader', 'Number of pages: {}'.format(pagecount), minvalue=1, maxvalue=pagecount)
+        if page:
+            _idx = page - 1
+            if _idx < 0:
+                _idx = 0
+            index = pagestarters[_idx]
+            while text[index] in whitespace:
+                index += 1
+            self.current_token, _ = self.get_token_by_character_index(index)
+            self.on_scroll_to_current()
+
     def on_click(self, evt):
         idx = self.textw.index('@{},{}'.format(evt.x, evt.y))
         line_s, col_s = idx.split('.')
