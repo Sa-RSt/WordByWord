@@ -159,6 +159,7 @@ class App(UIComponent):
         self.progress.update(self.speed_chooser.interval)
 
     def on_quit_button(self):
+        self.buttons.paused = True
         fname = self.filepicker.filename
 
         if not fname.strip():
