@@ -7,7 +7,6 @@ class NightmodeToggle(UIComponent):
         super(NightmodeToggle, self).__init__()
         self._enabled = False
         self.btn = Button(tkparent, command=self.toggle, text='Light theme')
-        self.toggle()
     
     @property
     def enabled(self):

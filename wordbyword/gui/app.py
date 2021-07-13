@@ -19,6 +19,7 @@ from .progress import Progress
 from .speedchooser import SpeedChooser
 from .nightmode_toggle import NightmodeToggle
 from . import colors
+from ..settings import Settings
 
 DEFAULT_TEXT = 'The quick brown fox jumped over the lazy dog.'
 NON_WORD_START = compile(r'^\W')
@@ -84,7 +85,8 @@ class App(UIComponent):
         if filename is not None:
             self.filepicker.filename = filename
         
-        self.update_nightmode_state(True)
+        self.update_nightmode_state(Settings['night_mode'])
+        self.nightmode_toggle.enabled = Settings['night_mode']
     
     def token_change(self, position):
         self.position = position - 1  # Position will increase by 1 on update.
@@ -192,6 +194,9 @@ class App(UIComponent):
             self.root_window.destroy()
         
     def update_nightmode_state(self, enabled):
+        Settings['night_mode'] = enabled
+        Settings.save()
+
         self.frame.config(bg=colors.BACKGROUND[enabled])
         for comp in [self.progress, self.speed_chooser, self.filepicker, self.display, self.buttons, self.map]:
             comp.trigger('nightmode-state', enabled)
