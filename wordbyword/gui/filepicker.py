@@ -1,9 +1,9 @@
 import os
-from tkinter import Frame
+from tkinter import Frame, Button, Label
 from tkinter.filedialog import askopenfilename
-from tkinter.ttk import Button, Label
 
 from . import UIComponent
+from . import colors
 
 
 LABEL_WIDTH = 50
@@ -38,6 +38,8 @@ class Filepicker(UIComponent):
         self.filename_entry = Label(self.frame, width=LABEL_WIDTH)
         self.filename_entry.grid(row=0, column=1)
 
+        self.on('nightmode-state', self.update_nightmode_state)
+
     @property
     def filename(self):
         return self._filename
@@ -64,3 +66,8 @@ class Filepicker(UIComponent):
         ])
         if filename:
             self.filename = filename
+    
+    def update_nightmode_state(self, enabled):
+        self.frame.config(bg=colors.BACKGROUND[enabled])
+        self.btn_pick.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
+        self.filename_entry.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled])

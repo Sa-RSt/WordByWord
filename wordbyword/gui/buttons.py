@@ -1,8 +1,9 @@
 from . import UIComponent
-from tkinter.ttk import Button
-from tkinter import Frame
+from tkinter import Frame, Button
 
-BUTTON_HIGHLIGHT_COLOR = 'green'
+from . import colors
+
+BUTTON_HIGHLIGHT_COLOR = ('green', '#33ff33')
 
 class ButtonsComponent(UIComponent):
     def __init__(self, tkparent):
@@ -16,6 +17,7 @@ class ButtonsComponent(UIComponent):
 
         self._paused = False
         self._factor = 1
+        self._nightmode = False
 
         self.frame = Frame(tkparent)
 
@@ -41,6 +43,8 @@ class ButtonsComponent(UIComponent):
         self.btn_fastforward = Button(self.btn_ff_outer, text='Fast Forward', command=self.onfastforward)
         self.btn_fastforward.grid(row=0, column=0, sticky='nsew', padx=2, pady=2)
         self.btn_ff_outer.grid(row=0, column=4, sticky='nsew')
+
+        self.on('nightmode-state', self.update_nightmode_state)
     
     @property
     def paused(self):
@@ -69,10 +73,10 @@ class ButtonsComponent(UIComponent):
         }
 
         for x in factors_frames.values():
-            x.config(bg='#f0f0f0')
+            x.config(bg=colors.BACKGROUND[self._nightmode])
 
         if self._factor in factors_frames.keys():
-            factors_frames[self._factor].config(bg=BUTTON_HIGHLIGHT_COLOR)
+            factors_frames[self._factor].config(bg=BUTTON_HIGHLIGHT_COLOR[self._nightmode])
 
     def get_tk_widget(self):
         return self.frame
@@ -108,3 +112,14 @@ class ButtonsComponent(UIComponent):
             self.factor = 1
         else:
             self.factor = -2
+    
+    def update_nightmode_state(self, enabled):
+        self._nightmode = enabled
+        self.factor = self.factor  # Updates the colors of the outer frames
+
+        self.btn_fastforward.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
+        self.btn_pause.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
+        self.btn_rewind.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
+        self.btn_slowforward.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
+        self.btn_slowrewind.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
+        self.frame.config(bg=colors.BACKGROUND[enabled])

@@ -17,7 +17,8 @@ from .map import Map
 from .message_dialog import MessageDialog
 from .progress import Progress
 from .speedchooser import SpeedChooser
-from .window import create_main_window
+from .nightmode_toggle import NightmodeToggle
+from . import colors
 
 DEFAULT_TEXT = 'The quick brown fox jumped over the lazy dog.'
 NON_WORD_START = compile(r'^\W')
@@ -44,8 +45,6 @@ class App(UIComponent):
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(3, weight=1)
 
-        self.overflow_frame = Frame(self.frame)
-
         self.progress = Progress(self.frame, len(split_tokens(DEFAULT_TEXT)))
         self.progress.get_tk_widget().grid(row=0, column=1, sticky='n')
         self.progress.on('save-progress', self.save_progress)
@@ -68,6 +67,10 @@ class App(UIComponent):
         self.map.on('token-change', self.token_change)
         self.map.get_tk_widget().grid(row=3, column=0, columnspan=3)
 
+        self.nightmode_toggle = NightmodeToggle(self.frame)
+        self.nightmode_toggle.on('nightmode-state', self.update_nightmode_state)
+        self.nightmode_toggle.get_tk_widget().grid(row=4, column=4)
+
         self.frame.after(self.speed_chooser.interval, self.updateloop)
 
         self.set_contents(DEFAULT_TEXT)
@@ -76,10 +79,12 @@ class App(UIComponent):
         self.root_window.protocol('WM_DELETE_WINDOW', self.on_quit_button)
         self.root_window.bind('<Control-f>', lambda _: self.map.on_find())
         self.root_window.bind('<Control-F>', lambda _: self.map.on_go_to_page())
-        self.root_window.bind('<space>', lambda _: self.buttons.onpause())
+        #self.root_window.bind('<space>', lambda _: self.buttons.onpause())
 
         if filename is not None:
             self.filepicker.filename = filename
+        
+        self.update_nightmode_state(True)
     
     def token_change(self, position):
         self.position = position - 1  # Position will increase by 1 on update.
@@ -185,6 +190,11 @@ class App(UIComponent):
             self.root_window.destroy()
         elif ans is False:
             self.root_window.destroy()
+        
+    def update_nightmode_state(self, enabled):
+        self.frame.config(bg=colors.BACKGROUND[enabled])
+        for comp in [self.progress, self.speed_chooser, self.filepicker, self.display, self.buttons, self.map]:
+            comp.trigger('nightmode-state', enabled)
 
     def get_tk_widget(self):
         return self.frame

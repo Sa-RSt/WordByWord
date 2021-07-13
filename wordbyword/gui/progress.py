@@ -1,10 +1,11 @@
 from . import UIComponent
-from tkinter import Frame, Label
-from tkinter.ttk import Button, Progressbar
+from tkinter import Frame, Label, Button
+from tkinter.ttk import Progressbar
+from . import colors
 
 
 FRAME_WIDTH = 175
-FRAME_HEIGHT = 95  # Height normally
+FRAME_HEIGHT = 110  # Height normally
 FRAME_HEIGHT_COLLAPSED = 56  # Height when progress is hidden by the user
 
 
@@ -63,6 +64,8 @@ class Progress(UIComponent):
         self.on('progress-saved', self.progress_saved)
 
         self.frame.grid_propagate(False)
+
+        self.on('nightmode-state', self.update_nightmode_state)
 
     @property
     def shown(self):
@@ -127,6 +130,14 @@ class Progress(UIComponent):
     def progress_saved(self):
         self.btn_save.config(text='Successfully saved!')
         self.frame.after(500, lambda: self.btn_save.config(text='Save progress'))
+
+    def update_nightmode_state(self, enabled):
+        self.frame.config(bg=colors.BACKGROUND[enabled])
+        self.btn_toggle.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
+        self.toggleframe.config(bg=colors.BACKGROUND[enabled])
+        self.lbl_eta.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled])
+        self.lbl_progdata.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled])
+        self.btn_save.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
 
     def get_tk_widget(self):
         return self.frame

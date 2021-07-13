@@ -1,10 +1,11 @@
 from . import UIComponent
 from ..tokenization import split_tokens
 from tkinter import Frame
-from tkinter.ttk import Button
+from tkinter import Button
 from tkinter.scrolledtext import ScrolledText
 from tkinter.simpledialog import askstring, askinteger
 from string import whitespace
+from . import colors
 
 
 def _findall(needle, haystack):
@@ -68,6 +69,8 @@ class Map(UIComponent):
 
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(0, weight=1)
+
+        self.on('nightmode-state', self.update_nightmode_state)
 
     @property
     def current_token(self):
@@ -157,3 +160,10 @@ class Map(UIComponent):
         are suitable for use in tkinter.
         '''
         return _tk_index(self._current_token.span[0]), _tk_index(self._current_token.span[1])
+
+    def update_nightmode_state(self, enabled):
+        self.btn_find.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
+        self.btn_page.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
+        self.btn_scroll_to_current.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
+        self.textw.config(bg=colors.DISPLAY[enabled], fg=colors.TEXT[enabled])
+        self.frame.config(bg=colors.BACKGROUND[enabled])
