@@ -1,5 +1,4 @@
-from tkinter import Frame, Label, IntVar
-from tkinter.ttk import Scale
+from tkinter import Frame, Label, IntVar, Scale
 from . import colors
 from . import UIComponent
 
@@ -14,20 +13,13 @@ class SpeedChooser(UIComponent):
         self.label = Label(self.frame, text='Words per minute: ')
         self.label.grid(row=0, column=0)
 
-        self.value_display_var = IntVar()
-        self.value_display_var.set(300)
-
-        self.scale = Scale(self.frame, from_=60, to=600, command=self._command)
+        self.scale = Scale(self.frame, from_=60, to=600, command=self._command, orient='horizontal')
         self.scale.set(300)
         self.scale.grid(row=0, column=1)
 
-        self.display = Label(self.frame, textvariable=self.value_display_var)
-        self.display.grid(row=0, column=2)
-
         self.on('nightmode-state', self.update_nightmode_state)
     
-    def _command(self, val):
-        self.value_display_var.set(int(float(val)))
+    def _command(self, _):
         self.trigger('speed-change')
 
     @property
@@ -56,7 +48,7 @@ class SpeedChooser(UIComponent):
     def update_nightmode_state(self, enabled):
         self.frame.config(bg=colors.BACKGROUND[enabled])
         self.label.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled])
-        self.display.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled])
+        self.scale.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled], troughcolor=colors.DISPLAY[enabled])
         
 
     def get_tk_widget(self):

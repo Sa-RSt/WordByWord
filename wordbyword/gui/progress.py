@@ -1,6 +1,6 @@
 from . import UIComponent
 from tkinter import Frame, Label, Button
-from tkinter.ttk import Progressbar
+from tkinter.ttk import Progressbar, Style
 from . import colors
 
 
@@ -45,7 +45,11 @@ class Progress(UIComponent):
 
         self.toggleframe = Frame(self.frame)
 
-        self.progbar = Progressbar(self.toggleframe, mode='determinate', orient='horizontal', length=100, value=1)
+        self.style = Style(self.toggleframe)
+        self.style.theme_use('clam')
+        self.style.configure('wbwr.Horizontal.TProgressbar')
+
+        self.progbar = Progressbar(self.toggleframe, mode='determinate', orient='horizontal', length=100, value=1, style='wbwr.Horizontal.TProgressbar')
         self.progbar.grid(row=0, column=0, sticky='nsew', columnspan=2)
 
         self.lbl_progdata = Label(self.toggleframe)
@@ -138,6 +142,7 @@ class Progress(UIComponent):
         self.lbl_eta.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled])
         self.lbl_progdata.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled])
         self.btn_save.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
+        self.style.configure('wbwr.Horizontal.TProgressbar', background=colors.TEXT[enabled], troughcolor=colors.DISPLAY[enabled])
 
     def get_tk_widget(self):
         return self.frame
