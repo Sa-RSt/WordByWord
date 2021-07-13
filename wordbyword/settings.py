@@ -20,4 +20,5 @@ try:
 except OSError:
     Settings['version'] = 1
     Settings['night_mode'] = True
+    Settings['blink_warning_shown'] = False
     Settings.save()

@@ -1,9 +1,9 @@
 from math import copysign
 from re import compile
 from time import perf_counter
-from tkinter import Frame
+from tkinter import Frame, Button
 from tkinter.filedialog import asksaveasfilename
-from tkinter.messagebox import showerror, askyesnocancel
+from tkinter.messagebox import showerror, askyesnocancel, showwarning
 
 from ..file_formats import check_extension
 from ..file_formats.read_file import read_file
@@ -70,7 +70,10 @@ class App(UIComponent):
 
         self.nightmode_toggle = NightmodeToggle(self.frame)
         self.nightmode_toggle.on('nightmode-state', self.update_nightmode_state)
-        self.nightmode_toggle.get_tk_widget().grid(row=4, column=4)
+        self.nightmode_toggle.get_tk_widget().grid(row=4, column=2)
+
+        self.health_and_safety = Button(self.frame, text='HEALTH & SAFETY WARNING', command=self.show_health_and_safety_warning)
+        self.health_and_safety.grid(row=4, column=1, pady=(20, 0))
 
         self.frame.after(self.speed_chooser.interval, self.updateloop)
 
@@ -87,6 +90,11 @@ class App(UIComponent):
         
         self.update_nightmode_state(Settings['night_mode'])
         self.nightmode_toggle.enabled = Settings['night_mode']
+
+        if not Settings['blink_warning_shown']:
+            self.show_health_and_safety_warning()
+            Settings['blink_warning_shown'] = True
+            Settings.save()
     
     def token_change(self, position):
         self.position = position - 1  # Position will increase by 1 on update.
@@ -198,8 +206,12 @@ class App(UIComponent):
         Settings.save()
 
         self.frame.config(bg=colors.BACKGROUND[enabled])
+        self.health_and_safety.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
         for comp in [self.progress, self.speed_chooser, self.filepicker, self.display, self.buttons, self.map]:
             comp.trigger('nightmode-state', enabled)
+
+    def show_health_and_safety_warning(self):
+        showwarning('IMPORTANT HEALTH & SAFETY WARNING', 'Just like any other app, excessive usage can make your eyes hurt. Please take a 10 to 15 minute break every hour, even if you don\'t think you need it. Also, it is very important not to forget to blink your eyes while reading.')
 
     def get_tk_widget(self):
         return self.frame
