@@ -113,20 +113,26 @@ class Map(UIComponent):
                 return (tok, position)
 
     def on_find(self):
-        occurences = None
-        current = 0
-        haystack = self.text.lower()
-        old_needle = ''
-        while 1:
-            needle = askstring('Find | Word by Word Reader', 'Search or press ENTER to jump to next occurence:', initialvalue=old_needle).lower()
-            if occurences is None or needle != old_needle:
-                current = 0
-                occurences = [x for x in _findall(needle, haystack)]
-            if needle == old_needle:
-                current += 1
-            self.current_token, _ = self.get_token_by_character_index(occurences[current])
-            self.on_scroll_to_current()
-            old_needle = needle
+        try:
+            occurences = None
+            current = 0
+            haystack = self.text.lower()
+            old_needle = ''
+            while 1:
+                needle = askstring('Find | Word by Word Reader', 'Search or press ENTER to jump to next occurence:', initialvalue=old_needle).lower()
+                self.textw.tag_remove('highlight', '1.0', 'end')
+                if occurences is None or needle != old_needle:
+                    current = 0
+                    occurences = [x for x in _findall(needle, haystack)]
+                if needle == old_needle:
+                    current += 1
+                start, end = _tk_index(occurences[current]), _tk_index(occurences[current] + len(needle))
+                self.textw.tag_add('highlight', start, end)
+                self.textw.tag_configure('highlight', background='red')
+                self.textw.see(start)
+                old_needle = needle
+        finally:
+            self.textw.tag_remove('highlight', '1.0', 'end')
     
     def on_go_to_page(self):
         text = self.text
@@ -140,8 +146,11 @@ class Map(UIComponent):
             index = pagestarters[_idx]
             while text[index] in whitespace:
                 index += 1
-            self.current_token, _ = self.get_token_by_character_index(index)
-            self.on_scroll_to_current()
+            tok, _ = self.get_token_by_character_index(index)
+            start, end = _tk_index(tok.span[0]), _tk_index(tok.span[1])
+            self.textw.tag_add('sel', start, end)
+            self.textw.see(start)
+            self.textw.focus_set()
 
     def on_click(self, evt):
         idx = self.textw.index('@{},{}'.format(evt.x, evt.y))
