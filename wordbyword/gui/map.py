@@ -1,7 +1,6 @@
 from . import UIComponent
 from ..tokenization import split_tokens
-from tkinter import Frame
-from tkinter import Button
+from tkinter import Frame, Button, Label
 from tkinter.scrolledtext import ScrolledText
 from tkinter.simpledialog import askstring, askinteger
 from string import whitespace
@@ -56,16 +55,19 @@ class Map(UIComponent):
         self.textw = ScrolledText(self.frame, state='disabled', cursor='plus')
         self.textw.bind('<Button-1>', self.on_click)
         self.textw.tag_configure('currentToken', underline=True)
-        self.textw.grid(row=0, column=0, columnspan=3, sticky='nsew')
+        self.textw.grid(row=0, column=0, columnspan=4, sticky='nsew')
 
         self.btn_scroll_to_current = Button(self.frame, text='Go to current word', command=self.on_scroll_to_current)
         self.btn_scroll_to_current.grid(row=1, column=0, sticky='w')
-        
-        self.btn_find = Button(self.frame, text='Go to specific word (Find)...', command=self.on_find)
-        self.btn_find.grid(row=1, column=1, sticky='e')
 
+        self.lbl_page = Label(self.frame, font=('', 16, 'bold'))
+        self.lbl_page.grid(row=1, column=1, sticky='w', padx=40)
+        
         self.btn_page = Button(self.frame, text='Jump to page...', command=self.on_go_to_page)
         self.btn_page.grid(row=1, column=2, sticky='e')
+
+        self.btn_find = Button(self.frame, text='Go to specific word (Find)...', command=self.on_find)
+        self.btn_find.grid(row=1, column=3, sticky='e')
 
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(0, weight=1)
@@ -83,6 +85,7 @@ class Map(UIComponent):
 
         if self._current_token is not None:
             self.textw.tag_add('currentToken', *self._current_token_tk_span())
+            self.lbl_page.configure(text='Page: {}/{}'.format(self.get_page_of_token(self._current_token), self.get_page_count()))
 
     @property
     def tokens(self):
@@ -94,6 +97,10 @@ class Map(UIComponent):
     
     @text.setter
     def text(self, val):
+        try:
+            del self._page_starters_cache
+        except AttributeError:
+            pass
         self.current_token = None
         self.textw.config(state='normal')  # Can't edit text in disabled mode
         self.textw.delete('1.0', 'end')
@@ -134,18 +141,44 @@ class Map(UIComponent):
         finally:
             self.textw.tag_remove('highlight', '1.0', 'end')
     
+    def get_page_starters(self):
+        '''Return a list with the indices of the first characters of all pages.'''
+        try:
+            return self._page_starters_cache
+        except AttributeError:
+            self._page_starters_cache = [0] + [x for x in _findall('\f', self.text)]
+            return self._page_starters_cache
+
+    def get_page_count(self):
+        return len(self.get_page_starters())
+
+    def get_page_of_token(self, tok):
+        count = 0
+        index = tok.span[0]
+        for pagestart in self.get_page_starters():
+            if index >= pagestart:
+                count += 1
+            else:
+                break
+        return count
+
     def on_go_to_page(self):
         text = self.text
-        pagestarters = [0] + [x for x in _findall('\f', text)]
-        pagecount = len(pagestarters)
-        page = askinteger('Go to Page | Word by Word Reader', 'Number of pages: {}'.format(pagecount), minvalue=1, maxvalue=pagecount)
+        pagestarters = self.get_page_starters()
+        pagecount = self.get_page_count()
+        page = askinteger('Go to Page | Word by Word Reader', 'Current page: {}/{}'.format(self.get_page_of_token(self.current_token), pagecount), minvalue=1, maxvalue=pagecount)
         if page:
             _idx = page - 1
             if _idx < 0:
                 _idx = 0
             index = pagestarters[_idx]
-            while text[index] in whitespace:
-                index += 1
+            try:
+                while text[index] in whitespace:
+                    index += 1
+            except IndexError:  # This may happen if the last page(s) is/are blank
+                while text[index - 1] in whitespace:
+                    index -= 1
+                index -= 1
             tok, _ = self.get_token_by_character_index(index)
             start, end = _tk_index(tok.span[0]), _tk_index(tok.span[1])
             self.textw.tag_add('sel', start, end)
@@ -174,5 +207,6 @@ class Map(UIComponent):
         self.btn_find.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
         self.btn_page.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
         self.btn_scroll_to_current.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
+        self.lbl_page.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled])
         self.textw.config(bg=colors.DISPLAY[enabled], fg=colors.TEXT[enabled])
         self.frame.config(bg=colors.BACKGROUND[enabled])
