@@ -34,7 +34,7 @@ def has_punctuation(word):
     return NON_WORD_END.search(word) or NON_WORD_START.search(word)
 
 class App(UIComponent):
-    def __init__(self, tkparent, root_window, filename):
+    def __init__(self, tkparent, root_window, assets_path, filename):
         super(App, self).__init__()
 
         self._interval_multiplier = 1
@@ -61,7 +61,7 @@ class App(UIComponent):
         self.display = Display(self.frame)
         self.display.get_tk_widget().grid(row=1, column=0, columnspan=3)
 
-        self.buttons = ButtonsComponent(self.frame)
+        self.buttons = ButtonsComponent(self.frame, assets_path)
         self.buttons.get_tk_widget().grid(row=2, column=0, columnspan=3)
 
         self.map = Map(self.frame)
