@@ -1,6 +1,7 @@
 from . import UIComponent
+from .comments import CommentList
 from ..tokenization import split_tokens
-from tkinter import Frame, Button, Label
+from tkinter import Frame, Button, Label, TclError
 from tkinter.scrolledtext import ScrolledText
 from tkinter.simpledialog import askstring, askinteger
 from string import whitespace
@@ -52,22 +53,30 @@ class Map(UIComponent):
 
         self.frame = Frame(tkparent)
 
-        self.textw = ScrolledText(self.frame, state='disabled', cursor='plus')
-        self.textw.bind('<Button-1>', self.on_click)
+        self.mapframe = Frame(self.frame)
+
+        self.textw = ScrolledText(self.mapframe, state='disabled', cursor='plus', width=100)
+        self.textw.bind('<ButtonRelease-1>', self.on_click)
         self.textw.tag_configure('currentToken', underline=True)
         self.textw.grid(row=0, column=0, columnspan=4, sticky='nsew')
 
-        self.btn_scroll_to_current = Button(self.frame, text='Go to current word', command=self.on_scroll_to_current)
+        self.btn_scroll_to_current = Button(self.mapframe, text='Go to current word', command=self.on_scroll_to_current)
         self.btn_scroll_to_current.grid(row=1, column=0, sticky='w')
 
-        self.lbl_page = Label(self.frame, font=('', 16, 'bold'))
+        self.lbl_page = Label(self.mapframe, font=('', 16, 'bold'))
         self.lbl_page.grid(row=1, column=1, sticky='w', padx=40)
         
-        self.btn_page = Button(self.frame, text='Jump to page...', command=self.on_go_to_page)
+        self.btn_page = Button(self.mapframe, text='Jump to page...', command=self.on_go_to_page)
         self.btn_page.grid(row=1, column=2, sticky='e')
 
-        self.btn_find = Button(self.frame, text='Go to specific word (Find)...', command=self.on_find)
+        self.btn_find = Button(self.mapframe, text='Go to specific word (Find)...', command=self.on_find)
         self.btn_find.grid(row=1, column=3, sticky='e')
+
+        self.mapframe.grid(row=0, column=0)
+
+        self.comlist = CommentList(self.frame)
+        self.comlist.get_tk_widget().grid(row=0, column=1, sticky='nsew')
+        self.comlist.on('highlight', self._highlight_comment_span)
 
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(0, weight=1)
@@ -185,15 +194,32 @@ class Map(UIComponent):
             self.textw.see(start)
             self.textw.focus_set()
 
+    def _highlight_comment_span(self, span):
+        self.textw.tag_remove('comhl', '1.0', 'end')
+        if span is not None:
+            self.textw.tag_add('comhl', _tk_index(span[0]), _tk_index(span[1]))
+            self.textw.tag_configure('comhl', background='green')
+            self.textw.see(_tk_index(span[0]))
+
     def on_click(self, evt):
-        idx = self.textw.index('@{},{}'.format(evt.x, evt.y))
-        line_s, col_s = idx.split('.')
-        line = int(line_s)
-        col = int(col_s)
-        int_idx = _to_int_index(self.text, line, col)
-        self.current_token, position = self.get_token_by_character_index(int_idx)
-        self.trigger('token-change', position)
-        
+        try:
+            self.textw.selection_get()
+        except TclError:
+            self.comlist.trigger('update-selection', None)
+
+            idx = self.textw.index('@{},{}'.format(evt.x, evt.y))
+            line_s, col_s = idx.split('.')
+            line = int(line_s)
+            col = int(col_s)
+            int_idx = _to_int_index(self.text, line, col)
+            self.current_token, position = self.get_token_by_character_index(int_idx)
+            self.trigger('token-change', position)
+        else:
+            selfirst_line_s, selfirst_col_s = self.textw.index('sel.first').split('.')
+            sellast_line_s, sellast_col_s = self.textw.index('sel.last').split('.')
+            selfirst_line, selfirst_col, sellast_line, sellast_col = int(selfirst_line_s), int(selfirst_col_s), int(sellast_line_s), int(sellast_col_s)
+            selfirst, sellast = _to_int_index(self.text, selfirst_line, selfirst_col), _to_int_index(self.text, sellast_line, sellast_col)
+            self.comlist.trigger('update-selection', (selfirst, sellast))
 
     def _current_token_tk_span(self):
         '''
@@ -210,3 +236,5 @@ class Map(UIComponent):
         self.lbl_page.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled])
         self.textw.config(bg=colors.DISPLAY[enabled], fg=colors.TEXT[enabled])
         self.frame.config(bg=colors.BACKGROUND[enabled])
+        self.mapframe.config(bg=colors.BACKGROUND[enabled])
+        self.comlist.trigger('nightmode-state', enabled)
