@@ -18,7 +18,7 @@ class Display(UIComponent):
         self._iframe = Frame(self.frame, background='white')
         self._iframe.grid(row=0, column=0, padx=2, pady=2, sticky='nsew')
         self.style = Style(self.frame)
-        self._lbl = Label(self._iframe, textvariable=self._contentvar, style='Display.TLabel', font=('', 48), width=20, anchor='center')
+        self._lbl = Label(self._iframe, textvariable=self._contentvar, style='Display.TLabel', font=('', 30), width=50, anchor='center')
         self._lbl.pack(anchor='center')
 
         self.on('nightmode-state', self.update_nightmode_state)
