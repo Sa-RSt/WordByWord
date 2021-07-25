@@ -59,10 +59,11 @@ class Filepicker(UIComponent):
     
     def onpick(self):
         filename = askopenfilename(filetypes=[
-            ('Files', '.txt; .pdf; .wbwr'),
+            ('Files', '.txt; .pdf; .wbwr; .jwbw'),
             ('Text files', '.txt'),
             ('PDF files', '.pdf'),
-            ('Word by Word Reader progress files', '.wbwr')
+            ('Word by Word Reader legacy files', '.wbwr'),
+            ('Word by Word Reader progress files', '.jwbw'),
         ])
         if filename:
             self.filename = filename

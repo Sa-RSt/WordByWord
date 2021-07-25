@@ -2,7 +2,7 @@ import pdfminer.high_level
 from pdfminer.pdftypes import PSException
 from string import whitespace
 
-from . import FileReader, check_extension
+from . import FileReader, check_extension, File
 
 
 whitespace_excluding_form_feed = ''
@@ -25,4 +25,4 @@ class PDFFileReader(FileReader):
         for char in whitespace_excluding_form_feed:
             while char + char in raw:
                 raw = raw.replace(char + char, char)
-        return raw.lstrip(whitespace_excluding_form_feed).rstrip()
+        return File(text=raw.lstrip(whitespace_excluding_form_feed).rstrip(), current_word=0, comments=[])

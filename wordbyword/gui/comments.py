@@ -43,7 +43,7 @@ class Comment(UIComponent):
         self.trigger('highlight', self.span)
 
     def update_nightmode_state(self, enabled):
-        self.textw.config(bg=colors.CONTROL_BUTTON[enabled], fg=colors.TEXT[enabled])
+        self.textw.config(bg=colors.CONTROL_BUTTON[enabled], fg=colors.TEXT[enabled], insertbackground=colors.TEXT[enabled])
         self.btn_del.config(bg='red', fg='white')
         self.frame.config(bg=colors.BACKGROUND[enabled])
 
@@ -55,14 +55,14 @@ class CommentList(UIComponent):
     def __init__(self, tkparent):
         super(CommentList, self).__init__()
 
-        self._comments = set()
+        self._comments = []
         self._currentRow = 0
         self._currentSelection = None
         self._nightmode = False
 
         self.frame = Frame(tkparent)
 
-        self.btn_add = Button(self.frame, text='+', command=self.on_add)
+        self.btn_add = Button(self.frame, text='[+] Add comment/bookmark', command=self.on_add)
         self.btn_add.grid(row=0, column=0, sticky='new')
 
         self.sf = ScrolledFrame(self.frame, scrollbars='vertical')
@@ -81,14 +81,30 @@ class CommentList(UIComponent):
         com.on('highlight', self._bubble_highlight)
         com.on('destroy', self.del_comment)
         self._currentRow += 1
-        self._comments.add(com)
+        self._comments.append(com)
         return com
+
+    def dump_comments(self):
+        '''Return a list of all comments, suitable for JSON serialization.'''
+        L = []
+        for com in self._comments:
+            L.append([com.span, com.text])
+        return L
+    
+    def load_comments(self, comments):
+        '''Set comments to the given list of comments, which should be the output of CommentsList.dump_comments()'''
+        for com in self._comments:
+            self.del_comment(com)
+        
+        for comdata in comments:
+            com = self.add_comment(comdata[0])
+            com.text = comdata[1]
 
     def _bubble_highlight(self, span):
         self.trigger('highlight', span)
 
     def del_comment(self, com):
-        self._comments.discard(com)
+        self._comments.remove(com)
         com.get_tk_widget().destroy()
 
     def on_add(self):

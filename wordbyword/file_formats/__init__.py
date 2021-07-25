@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 import os
+from collections import namedtuple
+
+File = namedtuple('File', 'text current_word comments')
 
 def check_extension(filename, ext):
     '''Convenience function to check if the given filename has the given extension.'''
@@ -14,7 +17,7 @@ class FileReader(ABC):
     @abstractmethod
     def read(self, filename):
         '''
-        Try to read a file and return its text.
+        Try to read a file and return a File namedtuple.
         Returns None if the file format is not supported by
         this FileReader.
         '''

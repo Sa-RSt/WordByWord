@@ -5,9 +5,10 @@ from tkinter import Frame, Button
 from tkinter.filedialog import asksaveasfilename
 from tkinter.messagebox import showerror, askyesnocancel, showwarning
 
-from ..file_formats import check_extension
+from ..file_formats import check_extension, File
+from ..file_formats.jwbw import JWBWFileIO
+from ..file_formats.wbwr import WBWRFileReader
 from ..file_formats.read_file import read_file
-from ..file_formats.wbwr import WBWRFile
 from ..tokenization import split_tokens
 from . import UIComponent
 from .buttons import ButtonsComponent
@@ -135,12 +136,11 @@ class App(UIComponent):
                 showerror('Word by Word Reader - Error', 'We are sorry for the inconvenience. Could not read file. Error details: ' + str(exc))
                 return
             if content is not None:
-                if isinstance(content, str):
-                    self.set_contents(content)
-                elif isinstance(content, WBWRFile):
-                    self.set_contents(content.text)
-                    self.position = content.current_word
-                    self.update_display()
+                self.set_contents(content.text)
+                self.position = content.current_word
+                self.map.comlist.load_comments(content.comments)
+                self.update_display()
+                
         finally:
             mbox.destroy()
 
@@ -155,21 +155,20 @@ class App(UIComponent):
     
     def save_progress(self):
         fname = self.filepicker.filename
-        if check_extension(fname, '.wbwr'):
-            self.create_wbwr(fname)
+        if check_extension(fname, '.jwbw'):
+            self.create_jwbw(fname)
             self.progress.trigger('progress-saved')
         else:
-            output = asksaveasfilename(filetypes=[('Word by Word Reader progress files', '.wbwr')], defaultextension='.wbwr')
+            output = asksaveasfilename(filetypes=[('Word by Word Reader progress files', '.jwbw')], defaultextension='.jwbw')
             if output:
-                self.create_wbwr(output)
+                self.create_jwbw(output)
                 self.filepicker.filename = output
                 self.save_progress()
 
-    def create_wbwr(self, fname):
-        f = WBWRFile(fname)
-        f.current_word = max(self.position - 1, 0)  # Position will be incremented on each update
-        f.text = self.map.text
-        return f
+    def create_jwbw(self, fname):
+        cw = max(self.position - 1, 0)  # Position will be incremented on each update
+        fio = JWBWFileIO()
+        fio.write(fname, File(text=self.map.text, current_word=cw, comments=self.map.comlist.dump_comments()))
 
     def on_speed_change(self):
         self.progress.update(self.speed_chooser.interval)
@@ -182,16 +181,7 @@ class App(UIComponent):
             self.root_window.destroy()
             return None
 
-        if not check_extension(fname, '.wbwr'):
-            self.save_or_confirm_quit()
-            return None
-        
-        f = WBWRFile(self.filepicker.filename)
-        if f.current_word != self.position - 1:
-            self.save_or_confirm_quit()
-            return None
-        
-        self.root_window.destroy()
+        self.save_or_confirm_quit()    
 
     def save_or_confirm_quit(self):
         ans = askyesnocancel('Save Progress - Word by Word reader', 'Would you like to save your progress, so you can resume reading later?')

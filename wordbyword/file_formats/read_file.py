@@ -1,11 +1,13 @@
 from .txt import TXTFileReader
 from .pdf import PDFFileReader
 from .wbwr import WBWRFileReader
+from .jwbw import JWBWFileIO
 
 reader_order = [
     TXTFileReader(),
     PDFFileReader(),
     WBWRFileReader(),
+    JWBWFileIO(),
 ]
 
 def read_file(filename):
