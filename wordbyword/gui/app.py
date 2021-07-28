@@ -53,6 +53,7 @@ class App(UIComponent):
 
         self.speed_chooser = SpeedChooser(self.frame)
         self.speed_chooser.get_tk_widget().grid(row=0, column=2, sticky='ne')
+        self.speed_chooser.speed = Settings['speed']
         self.speed_chooser.on('speed-change', self.on_speed_change)
 
         self.filepicker = Filepicker(self.frame)
@@ -182,13 +183,14 @@ class App(UIComponent):
 
     def on_speed_change(self):
         self.progress.update(self.speed_chooser.interval)
+        Settings['speed'] = self.speed_chooser.speed
 
     def on_quit_button(self):
         self.buttons.paused = True
         fname = self.filepicker.filename
 
         if not fname.strip():
-            self.root_window.destroy()
+            self.terminate_app()
             return None
 
         self.save_or_confirm_quit()    
@@ -197,9 +199,14 @@ class App(UIComponent):
         ans = askyesnocancel(*CONFIRM_SAVE)
         if ans is True:
             self.save_progress()
-            self.root_window.destroy()
+            self.terminate_app()
         elif ans is False:
-            self.root_window.destroy()
+            self.terminate_app()
+        
+    def terminate_app(self):
+        '''Exit the program.'''
+        self.root_window.destroy()
+        Settings.save()
         
     def update_nightmode_state(self, enabled):
         Settings['night_mode'] = enabled

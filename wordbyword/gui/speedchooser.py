@@ -13,8 +13,7 @@ class SpeedChooser(UIComponent):
         self.label = Label(self.frame, text='Words per minute: ')
         self.label.grid(row=0, column=0)
 
-        self.scale = Scale(self.frame, from_=60, to=600, command=self._command, orient='horizontal')
-        self.scale.set(300)
+        self.scale = Scale(self.frame, from_=60, to=600, command=self._command, orient='horizontal', length=150)
         self.scale.grid(row=0, column=1)
 
         self.on('nightmode-state', self.update_nightmode_state)
@@ -28,8 +27,7 @@ class SpeedChooser(UIComponent):
         Return the interval at which the words
         should be updated, in milisseconds.
         '''
-        words_per_min = self.scale.get()
-        words_per_sec = words_per_min / 60
+        words_per_sec = self.speed / 60
         delay_in_secs = 1/words_per_sec
         return int(delay_in_secs * 1000)
     
@@ -41,9 +39,15 @@ class SpeedChooser(UIComponent):
         '''
         delay_in_secs = val/1000
         words_per_sec = 1/delay_in_secs
-        words_per_min = words_per_sec * 60
-        self.scale.set(words_per_min)
+        self.speed = words_per_sec * 60
 
+    @property
+    def speed(self):
+        return self.scale.get()
+    
+    @speed.setter
+    def speed(self, val):
+        self.scale.set(val)
 
     def update_nightmode_state(self, enabled):
         self.frame.config(bg=colors.BACKGROUND[enabled])
