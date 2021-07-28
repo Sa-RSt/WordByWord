@@ -25,7 +25,7 @@ from ..settings import Settings
 DEFAULT_TEXT = 'The quick brown fox jumped over the lazy dog.'
 NON_WORD_START = compile(r'^\W')
 NON_WORD_END = compile(r'\W$')
-
+CONFIRM_SAVE = ('Save Progress - Word by Word reader', 'Would you like to save your progress, so you can resume reading later?')
 
 def has_punctuation(word):
     '''
@@ -58,6 +58,7 @@ class App(UIComponent):
         self.filepicker = Filepicker(self.frame)
         self.filepicker.get_tk_widget().grid(row=0, column=0, sticky='nw')
         self.filepicker.on('file-change', self.get_file)
+        self.filepicker.on('will-pick-file', self.will_pick_file)
 
         self.display = Display(self.frame)
         self.display.get_tk_widget().grid(row=1, column=0, columnspan=3)
@@ -124,6 +125,15 @@ class App(UIComponent):
                 return 1.75
         return 1
 
+    def will_pick_file(self):
+        if not self.filepicker.filename:
+            return
+        ans = askyesnocancel(*CONFIRM_SAVE)
+        if ans is None:
+            return True
+        elif ans:
+            self.save_progress()
+
     def get_file(self, filename):
         if not filename:
             return
@@ -184,7 +194,7 @@ class App(UIComponent):
         self.save_or_confirm_quit()    
 
     def save_or_confirm_quit(self):
-        ans = askyesnocancel('Save Progress - Word by Word reader', 'Would you like to save your progress, so you can resume reading later?')
+        ans = askyesnocancel(*CONFIRM_SAVE)
         if ans is True:
             self.save_progress()
             self.root_window.destroy()

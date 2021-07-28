@@ -22,10 +22,13 @@ class UIComponent(ABC):
     def trigger(self, evt, obj=...):
         '''
         Call all callbacks associated by UIComponent.on() with the given custom event 'evt'.
+        Returns a list with the return values of each callback.
         '''
+        ret = []
         for ename, callback in self.__evt_handlers:
             if ename == evt:
                 if obj is ...:
-                    callback()
+                    ret.append(callback())
                 else:
-                    callback(obj)
+                    ret.append(callback(obj))
+        return ret
