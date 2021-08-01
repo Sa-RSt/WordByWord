@@ -1,4 +1,5 @@
 from tkinter import Frame, Label, IntVar, Scale
+from wordbyword.internationalization import getTranslationKey
 from . import colors
 from . import UIComponent
 
@@ -16,7 +17,7 @@ class SpeedChooser(UIComponent):
         self.scale = Scale(self.frame, from_=60, to=600, command=self._command, orient='horizontal', length=150)
         self.scale.grid(row=0, column=1)
 
-        self.on('nightmode-state', self.update_nightmode_state)
+        self.on('update-state', self.update_state)
     
     def _command(self, _):
         self.trigger('speed-change')
@@ -49,10 +50,10 @@ class SpeedChooser(UIComponent):
     def speed(self, val):
         self.scale.set(val)
 
-    def update_nightmode_state(self, enabled):
-        self.frame.config(bg=colors.BACKGROUND[enabled])
-        self.label.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled])
-        self.scale.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled], troughcolor=colors.DISPLAY[enabled])
+    def update_state(self, state):
+        self.frame.config(bg=colors.BACKGROUND[state.theme])
+        self.label.config(bg=colors.BACKGROUND[state.theme], fg=colors.TEXT[state.theme], text=getTranslationKey(state.language, 'speedChooser.wordsPerMinute'))
+        self.scale.config(bg=colors.BACKGROUND[state.theme], fg=colors.TEXT[state.theme], troughcolor=colors.DISPLAY[state.theme])
         
 
     def get_tk_widget(self):

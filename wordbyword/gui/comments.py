@@ -1,3 +1,5 @@
+from ..internationalization import getTranslationKey
+from .state import State
 from . import UIComponent
 from tkinter import Frame, Button, Text
 from tkscrolledframe import ScrolledFrame
@@ -25,7 +27,7 @@ class Comment(UIComponent):
         self.btn_del = Button(self.frame, text='×', command=self.on_btn_del)
         self.btn_del.grid(row=0, column=12)
 
-        self.on('nightmode-state', self.update_nightmode_state)
+        self.on('update-state', self.update_state)
 
     @property
     def text(self):
@@ -42,10 +44,10 @@ class Comment(UIComponent):
     def _hightlight(self, *_):
         self.trigger('highlight', self.span)
 
-    def update_nightmode_state(self, enabled):
-        self.textw.config(bg=colors.CONTROL_BUTTON[enabled], fg=colors.TEXT[enabled], insertbackground=colors.TEXT[enabled])
+    def update_state(self, state):
+        self.textw.config(bg=colors.CONTROL_BUTTON[state.theme], fg=colors.TEXT[state.theme], insertbackground=colors.TEXT[state.theme])
         self.btn_del.config(bg='red', fg='white')
-        self.frame.config(bg=colors.BACKGROUND[enabled])
+        self.frame.config(bg=colors.BACKGROUND[state.theme])
 
     def get_tk_widget(self):
         return self.frame
@@ -59,6 +61,7 @@ class CommentList(UIComponent):
         self._currentRow = 0
         self._currentSelection = None
         self._nightmode = False
+        self._lang = 'en'
 
         self.frame = Frame(tkparent)
 
@@ -72,12 +75,12 @@ class CommentList(UIComponent):
         self.frame.grid_rowconfigure(1, weight=1)
 
         self.on('update-selection', self.update_selection)
-        self.on('nightmode-state', self.update_nightmode_state)
+        self.on('update-state', self.update_state)
     
     def add_comment(self, span):
         com = Comment(self.comframe, span)
         com.get_tk_widget().grid(row=self._currentRow, column=0)
-        com.trigger('nightmode-state', self._nightmode)
+        com.trigger('update-state', State(theme=self._nightmode, language=self._lang))
         com.on('highlight', self._bubble_highlight)
         com.on('destroy', self.del_comment)
         self._currentRow += 1
@@ -109,7 +112,7 @@ class CommentList(UIComponent):
 
     def on_add(self):
         if self._currentSelection is None:
-            showerror('Word by Word Reader', 'Please use your cursor to select some text to comment on')
+            showerror('Word by Word Reader', getTranslationKey(self._lang, 'map.addComment.noneSelected'))
             return
         self.add_comment(self._currentSelection)
 
@@ -119,12 +122,14 @@ class CommentList(UIComponent):
     def get_tk_widget(self):
         return self.frame
     
-    def update_nightmode_state(self, enabled):
-        self._nightmode = enabled
-        self.frame.config(bg=colors.BACKGROUND[enabled])
-        self.comframe.config(bg=colors.BACKGROUND[enabled])
-        self.sf.config(bg=colors.BACKGROUND[enabled])
-        self.sf._canvas.config(bg=colors.BACKGROUND[enabled])
-        self.btn_add.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
+    def update_state(self, state):
+        self._nightmode = state.theme
+        self._lang = state.language
+
+        self.frame.config(bg=colors.BACKGROUND[state.theme])
+        self.comframe.config(bg=colors.BACKGROUND[state.theme])
+        self.sf.config(bg=colors.BACKGROUND[state.theme])
+        self.sf._canvas.config(bg=colors.BACKGROUND[state.theme])
+        self.btn_add.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme], text=getTranslationKey(state.language, 'map.addComment'))
         for com in self._comments:
-            com.trigger('nightmode-state', enabled)
+            com.trigger('update-state', state)

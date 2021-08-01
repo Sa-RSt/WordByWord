@@ -3,6 +3,7 @@ from tkinter import Frame, Button, Label
 from tkinter.filedialog import askopenfilename
 
 from . import UIComponent
+from ..internationalization import getTranslationKey
 from . import colors
 
 
@@ -29,16 +30,17 @@ class Filepicker(UIComponent):
     def __init__(self, tkparent):
         super(Filepicker, self).__init__()
         self._filename = ''
+        self._lang = 'en'
 
         self.frame = Frame(tkparent)
 
-        self.btn_pick = Button(self.frame, text='Pick a file (.PDF or .TXT)...', command=self.onpick)
+        self.btn_pick = Button(self.frame, text=getTranslationKey(self._lang, 'filePicker.pickAFile'), command=self.onpick)
         self.btn_pick.grid(row=0, column=0)
 
         self.filename_entry = Label(self.frame, width=LABEL_WIDTH)
         self.filename_entry.grid(row=0, column=1)
 
-        self.on('nightmode-state', self.update_nightmode_state)
+        self.on('update-state', self.update_state)
 
     @property
     def filename(self):
@@ -61,16 +63,17 @@ class Filepicker(UIComponent):
         if any(self.trigger('will-pick-file')):
             return
         filename = askopenfilename(filetypes=[
-            ('Files', '.txt; .pdf; .wbwr; .jwbw'),
-            ('Text files', '.txt'),
-            ('PDF files', '.pdf'),
-            ('Word by Word Reader legacy files', '.wbwr'),
-            ('Word by Word Reader progress files', '.jwbw'),
+            (getTranslationKey(self._lang, 'fileType.*'), '.txt; .pdf; .wbwr; .jwbw'),
+            (getTranslationKey(self._lang, 'fileType.txt'), '.txt'),
+            (getTranslationKey(self._lang, 'fileType.pdf'), '.pdf'),
+            (getTranslationKey(self._lang, 'fileType.wbwr'), '.wbwr'),
+            (getTranslationKey(self._lang, 'fileType.jwbw'), '.jwbw'),
         ])
         if filename:
             self.filename = filename
     
-    def update_nightmode_state(self, enabled):
-        self.frame.config(bg=colors.BACKGROUND[enabled])
-        self.btn_pick.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
-        self.filename_entry.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled])
+    def update_state(self, state):
+        self._lang = state.language
+        self.frame.config(bg=colors.BACKGROUND[state.theme])
+        self.btn_pick.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme], text=getTranslationKey(state.language, 'filePicker.pickAFile'))
+        self.filename_entry.config(bg=colors.BACKGROUND[state.theme], fg=colors.TEXT[state.theme])

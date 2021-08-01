@@ -1,11 +1,24 @@
 import json
 import os
+from locale import getdefaultlocale
+from .internationalization import SUPPORTED_LANGUAGES
+
+
+_lang = getdefaultlocale()[0]
+for _supported_lang in SUPPORTED_LANGUAGES.keys():
+    if _lang in _supported_lang or _supported_lang in _lang:
+        _lang = _supported_lang
+        break
+else:
+    _lang = 'en'
+
 
 SETTINGS_FILE = os.path.expanduser('~/.wbwr_cfg')
 DEFAULT_SETTINGS = {
     'blink_warning_shown': False,
-    'night_mode': True,
-    'speed': 300
+    'theme': 1,
+    'speed': 300,
+    'language': _lang
 }
 
 class _settings_type(dict):

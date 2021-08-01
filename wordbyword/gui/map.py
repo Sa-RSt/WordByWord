@@ -1,6 +1,7 @@
 from . import UIComponent
 from .comments import CommentList
 from ..tokenization import split_tokens
+from ..internationalization import getTranslationKey
 from tkinter import Frame, Button, Label, TclError
 from tkinter.scrolledtext import ScrolledText
 from tkinter.simpledialog import askstring, askinteger
@@ -50,6 +51,7 @@ class Map(UIComponent):
 
         self._current_token = None
         self._tokens = []
+        self._lang = 'en'
 
         self.frame = Frame(tkparent)
 
@@ -60,16 +62,16 @@ class Map(UIComponent):
         self.textw.tag_configure('currentToken', underline=True)
         self.textw.grid(row=0, column=0, columnspan=4, sticky='nsew')
 
-        self.btn_scroll_to_current = Button(self.mapframe, text='Go to current word', command=self.on_scroll_to_current)
+        self.btn_scroll_to_current = Button(self.mapframe, text=getTranslationKey(self._lang, 'map.toCurrentWord'), command=self.on_scroll_to_current)
         self.btn_scroll_to_current.grid(row=1, column=0, sticky='w')
 
         self.lbl_page = Label(self.mapframe, font=('', 16, 'bold'))
         self.lbl_page.grid(row=1, column=1, sticky='w', padx=40)
         
-        self.btn_page = Button(self.mapframe, text='Jump to page...', command=self.on_go_to_page)
+        self.btn_page = Button(self.mapframe, text=getTranslationKey(self._lang, 'map.goToPage.button'), command=self.on_go_to_page)
         self.btn_page.grid(row=1, column=2, sticky='e')
 
-        self.btn_find = Button(self.mapframe, text='Go to specific word (Find)...', command=self.on_find)
+        self.btn_find = Button(self.mapframe, text=getTranslationKey(self._lang, 'map.find.button'), command=self.on_find)
         self.btn_find.grid(row=1, column=3, sticky='e')
 
         self.mapframe.grid(row=0, column=0)
@@ -81,7 +83,7 @@ class Map(UIComponent):
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(0, weight=1)
 
-        self.on('nightmode-state', self.update_nightmode_state)
+        self.on('update-state', self.update_state)
 
     @property
     def current_token(self):
@@ -94,7 +96,7 @@ class Map(UIComponent):
 
         if self._current_token is not None:
             self.textw.tag_add('currentToken', *self._current_token_tk_span())
-            self.lbl_page.configure(text='Page: {}/{}'.format(self.get_page_of_token(self._current_token), self.get_page_count()))
+            self.lbl_page.configure(text=getTranslationKey(self._lang, 'map.currentPage').format(self.get_page_of_token(self._current_token), self.get_page_count()))
 
     @property
     def tokens(self):
@@ -135,7 +137,7 @@ class Map(UIComponent):
             haystack = self.text.lower()
             old_needle = ''
             while 1:
-                needle = askstring('Find | Word by Word Reader', 'Search or press ENTER to jump to next occurence:', initialvalue=old_needle).lower()
+                needle = askstring(getTranslationKey(self._lang, 'map.find.title'), getTranslationKey(self._lang, 'map.find.body'), initialvalue=old_needle).lower()
                 self.textw.tag_remove('highlight', '1.0', 'end')
                 if occurences is None or needle != old_needle:
                     current = 0
@@ -175,7 +177,7 @@ class Map(UIComponent):
         text = self.text
         pagestarters = self.get_page_starters()
         pagecount = self.get_page_count()
-        page = askinteger('Go to Page | Word by Word Reader', 'Current page: {}/{}'.format(self.get_page_of_token(self.current_token), pagecount), minvalue=1, maxvalue=pagecount)
+        page = askinteger(getTranslationKey(self._lang, 'map.goToPage.title'), getTranslationKey(self._lang, 'map.goToPage.body').format(self.get_page_of_token(self.current_token), pagecount), minvalue=1, maxvalue=pagecount)
         if page:
             _idx = page - 1
             if _idx < 0:
@@ -229,12 +231,15 @@ class Map(UIComponent):
         '''
         return _tk_index(self._current_token.span[0]), _tk_index(self._current_token.span[1])
 
-    def update_nightmode_state(self, enabled):
-        self.btn_find.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
-        self.btn_page.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
-        self.btn_scroll_to_current.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
-        self.lbl_page.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled])
-        self.textw.config(bg=colors.DISPLAY[enabled], fg=colors.TEXT[enabled])
-        self.frame.config(bg=colors.BACKGROUND[enabled])
-        self.mapframe.config(bg=colors.BACKGROUND[enabled])
-        self.comlist.trigger('nightmode-state', enabled)
+    def update_state(self, state):
+        self._lang = state.language
+        self.current_token = self.current_token  # Update page index
+
+        self.btn_find.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme], text=getTranslationKey(state.language, 'map.find.button'))
+        self.btn_page.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme], text=getTranslationKey(state.language, 'map.goToPage.button'))
+        self.btn_scroll_to_current.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme], text=getTranslationKey(state.language, 'map.toCurrentWord'))
+        self.lbl_page.config(bg=colors.BACKGROUND[state.theme], fg=colors.TEXT[state.theme])
+        self.textw.config(bg=colors.DISPLAY[state.theme], fg=colors.TEXT[state.theme])
+        self.frame.config(bg=colors.BACKGROUND[state.theme])
+        self.mapframe.config(bg=colors.BACKGROUND[state.theme])
+        self.comlist.trigger('update-state', state)

@@ -57,7 +57,7 @@ class ButtonsComponent(UIComponent):
         self.btn_fastforward.grid(row=0, column=0, sticky='nsew', padx=2, pady=2)
         self.btn_ff_outer.grid(row=0, column=4, sticky='nsew')
 
-        self.on('nightmode-state', self.update_nightmode_state)
+        self.on('update-state', self.update_state)
     
     @property
     def paused(self):
@@ -126,17 +126,17 @@ class ButtonsComponent(UIComponent):
         else:
             self.factor = -2
     
-    def update_nightmode_state(self, enabled):
-        self._nightmode = enabled
+    def update_state(self, state):
+        self._nightmode = state.theme
         self.factor = self.factor  # Updates the colors of the outer frames
 
-        self.btn_fastforward.config(bg=colors.CONTROL_BUTTON[enabled], image=self.get_prefixed_asset('fast_forward.png'))
-        self.btn_pause.config(bg=colors.CONTROL_BUTTON[enabled])
+        self.btn_fastforward.config(bg=colors.CONTROL_BUTTON[state.theme], image=self.get_prefixed_asset('fast_forward.png'))
+        self.btn_pause.config(bg=colors.CONTROL_BUTTON[state.theme])
         self.paused = self.paused  # Automatically reconfigures play/pause button icon
-        self.btn_rewind.config(bg=colors.CONTROL_BUTTON[enabled], image=self.get_prefixed_asset('rewind.png'))
-        self.btn_slowforward.config(bg=colors.CONTROL_BUTTON[enabled], image=self.get_prefixed_asset('slow_forward.png'))
-        self.btn_slowrewind.config(bg=colors.CONTROL_BUTTON[enabled], image=self.get_prefixed_asset('slow_rewind.png'))
-        self.frame.config(bg=colors.BACKGROUND[enabled])
+        self.btn_rewind.config(bg=colors.CONTROL_BUTTON[state.theme], image=self.get_prefixed_asset('rewind.png'))
+        self.btn_slowforward.config(bg=colors.CONTROL_BUTTON[state.theme], image=self.get_prefixed_asset('slow_forward.png'))
+        self.btn_slowrewind.config(bg=colors.CONTROL_BUTTON[state.theme], image=self.get_prefixed_asset('slow_rewind.png'))
+        self.frame.config(bg=colors.BACKGROUND[state.theme])
     
     def get_prefixed_asset(self, filename):
         '''Return a tkinter.PhotoImage from an asset located in the assets folder, prepending 'dark_' to the file name if the UI is currently in dark theme, and prepending 'light_' otherwise.'''

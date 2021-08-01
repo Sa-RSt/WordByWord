@@ -21,7 +21,7 @@ class Display(UIComponent):
         self._lbl = Label(self._iframe, textvariable=self._contentvar, style='Display.TLabel', font=('', 30), width=50, anchor='center')
         self._lbl.pack(anchor='center')
 
-        self.on('nightmode-state', self.update_nightmode_state)
+        self.on('update-state', self.update_state)
 
     @property
     def content(self):
@@ -32,9 +32,9 @@ class Display(UIComponent):
         self._content = val
         self._contentvar.set(val)
 
-    def update_nightmode_state(self, enabled):
-        self._iframe.config(bg=colors.DISPLAY[enabled])
-        self.style.configure('Display.TLabel', background=colors.DISPLAY[enabled], foreground=colors.TEXT[enabled])
+    def update_state(self, state):
+        self._iframe.config(bg=colors.DISPLAY[state.theme])
+        self.style.configure('Display.TLabel', background=colors.DISPLAY[state.theme], foreground=colors.TEXT[state.theme])
         
 
     def get_tk_widget(self):

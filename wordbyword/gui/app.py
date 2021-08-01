@@ -1,7 +1,7 @@
 from math import copysign
 from re import compile
 from time import perf_counter
-from tkinter import Frame, Button
+from tkinter import Frame, Button, Menu
 from tkinter.filedialog import asksaveasfilename
 from tkinter.messagebox import showerror, askyesnocancel, showwarning
 
@@ -19,13 +19,15 @@ from .message_dialog import MessageDialog
 from .progress import Progress
 from .speedchooser import SpeedChooser
 from .nightmode_toggle import NightmodeToggle
+from .language_chooser import LanguageChooser
 from . import colors
 from ..settings import Settings
+from ..internationalization import getTranslationKey, SUPPORTED_LANGUAGES
+from .state import State
 
 DEFAULT_TEXT = 'The quick brown fox jumped over the lazy dog.'
 NON_WORD_START = compile(r'^\W')
 NON_WORD_END = compile(r'\W$')
-CONFIRM_SAVE = ('Save Progress - Word by Word reader', 'Would you like to save your progress, so you can resume reading later?')
 
 def has_punctuation(word):
     '''
@@ -39,8 +41,18 @@ class App(UIComponent):
         super(App, self).__init__()
 
         self._interval_multiplier = 1
+        self._state = State(theme=Settings['theme'], language=Settings['language'])
 
         self.root_window = root_window
+
+        self.menu = Menu(root_window)
+
+        self.language_chooser = LanguageChooser(self.menu, SUPPORTED_LANGUAGES)
+        self.language_chooser.on('language', lambda language: self.update_state(State(theme=self._state.theme, language=language)))
+        self.menu.add_cascade(label='Change Language/Mudar Idioma', menu=self.language_chooser.get_tk_widget())
+
+        root_window.config(menu=self.menu)
+
         self.frame = Frame(tkparent)
 
         self.frame.columnconfigure(1, weight=1)
@@ -72,10 +84,10 @@ class App(UIComponent):
         self.map.get_tk_widget().grid(row=3, column=0, columnspan=3)
 
         self.nightmode_toggle = NightmodeToggle(self.frame)
-        self.nightmode_toggle.on('nightmode-state', self.update_nightmode_state)
+        self.nightmode_toggle.on('nightmode-state', lambda theme: self.update_state(State(theme=theme, language=self._state.language)))
         self.nightmode_toggle.get_tk_widget().grid(row=4, column=2)
 
-        self.health_and_safety = Button(self.frame, text='HEALTH & SAFETY WARNING', command=self.show_health_and_safety_warning)
+        self.health_and_safety = Button(self.frame, text=getTranslationKey(self._state.language, 'healthAndSafety.buttonText'), command=self.show_health_and_safety_warning)
         self.health_and_safety.grid(row=4, column=1, pady=(20, 0))
 
         self.frame.after(self.speed_chooser.interval, self.updateloop)
@@ -91,8 +103,8 @@ class App(UIComponent):
         if filename is not None:
             self.filepicker.filename = filename
         
-        self.update_nightmode_state(Settings['night_mode'])
-        self.nightmode_toggle.enabled = Settings['night_mode']
+        self.update_state(self._state)
+        self.nightmode_toggle.enabled = Settings['theme']
 
         if not Settings['blink_warning_shown']:
             self.show_health_and_safety_warning()
@@ -129,7 +141,7 @@ class App(UIComponent):
     def will_pick_file(self):
         if not self.filepicker.filename:
             return
-        ans = askyesnocancel(*CONFIRM_SAVE)
+        ans = askyesnocancel(getTranslationKey(self._state.language, 'confirmSave.title'), getTranslationKey(self._state.language, 'confirmSave.body'))
         if ans is None:
             return True
         elif ans:
@@ -138,13 +150,16 @@ class App(UIComponent):
     def get_file(self, filename):
         if not filename:
             return
-        mbox = MessageDialog(self.get_tk_widget(), 'Word by Word Reader: Loading...', 'Converting file. Please wait. This may take several minutes...')
+        mbox = MessageDialog(self.get_tk_widget(), getTranslationKey(self._state.language, 'converting.title'), getTranslationKey(self._state.language, 'converting.body'))
         try:
             try:
                 content = read_file(filename)
             except Exception as exc:
                 self.filepicker.filename = ''
-                showerror('Word by Word Reader - Error', 'We are sorry for the inconvenience. Could not read file. Error details: ' + str(exc))
+                showerror(
+                    getTranslationKey(self._state.language, 'error.readFile.title'),
+                    getTranslationKey(self._state.language, 'error.readFile.body').format(str(exc))
+                )
                 return
             if content is not None:
                 self.set_contents(content.text)
@@ -170,7 +185,7 @@ class App(UIComponent):
             self.create_jwbw(fname)
             self.progress.trigger('progress-saved')
         else:
-            output = asksaveasfilename(filetypes=[('Word by Word Reader progress files', '.jwbw')], defaultextension='.jwbw')
+            output = asksaveasfilename(filetypes=[(getTranslationKey(self._state.language, 'fileType.jwbw'), '.jwbw')], defaultextension='.jwbw')
             if output:
                 self.create_jwbw(output)
                 self.filepicker.filename = output
@@ -196,7 +211,7 @@ class App(UIComponent):
         self.save_or_confirm_quit()    
 
     def save_or_confirm_quit(self):
-        ans = askyesnocancel(*CONFIRM_SAVE)
+        ans = askyesnocancel(getTranslationKey(self._state.language, 'confirmSave.title'), getTranslationKey(self._state.language, 'confirmSave.body'))
         if ans is True:
             self.save_progress()
             self.terminate_app()
@@ -208,17 +223,19 @@ class App(UIComponent):
         self.root_window.destroy()
         Settings.save()
         
-    def update_nightmode_state(self, enabled):
-        Settings['night_mode'] = enabled
+    def update_state(self, state):
+        self._state = state
+        Settings['theme'] = state.theme
+        Settings['language'] = state.language
         Settings.save()
 
-        self.frame.config(bg=colors.BACKGROUND[enabled])
-        self.health_and_safety.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
-        for comp in [self.progress, self.speed_chooser, self.filepicker, self.display, self.buttons, self.map]:
-            comp.trigger('nightmode-state', enabled)
+        self.frame.config(bg=colors.BACKGROUND[state.theme])
+        self.health_and_safety.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme], text=getTranslationKey(state.language, 'healthAndSafety.buttonText'))
+        for comp in [self.progress, self.speed_chooser, self.filepicker, self.display, self.buttons, self.map, self.nightmode_toggle]:
+            comp.trigger('update-state', state)
 
     def show_health_and_safety_warning(self):
-        showwarning('IMPORTANT HEALTH & SAFETY WARNING', 'Just like any other app, excessive usage can make your eyes hurt. Please take a 10 to 15 minute break every hour, even if you don\'t think you need it. Also, it is very important not to forget to blink your eyes while reading.')
+        showwarning(getTranslationKey(self._state.language, 'healthAndSafety.title'), getTranslationKey(self._state.language, 'healthAndSafety.body'))
 
     def get_tk_widget(self):
         return self.frame

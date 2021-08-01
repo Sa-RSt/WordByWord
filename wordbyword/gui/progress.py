@@ -2,11 +2,12 @@ from . import UIComponent
 from tkinter import Frame, Label, Button
 from tkinter.ttk import Progressbar, Style
 from . import colors
+from ..internationalization import getTranslationKey
 
 
 FRAME_WIDTH = 175
 FRAME_HEIGHT = 110  # Height normally
-FRAME_HEIGHT_COLLAPSED = 56  # Height when progress is hidden by the user
+FRAME_HEIGHT_COLLAPSED = 70  # Height when progress is hidden by the user
 
 
 def _timeformat(seconds):
@@ -34,6 +35,7 @@ class Progress(UIComponent):
         '''
         super(Progress, self).__init__()
 
+        self._lang = 'en'
         self._shown = True
         self.total = total
         self._last_interval = 0
@@ -69,7 +71,7 @@ class Progress(UIComponent):
 
         self.frame.grid_propagate(False)
 
-        self.on('nightmode-state', self.update_nightmode_state)
+        self.on('update-state', self.update_state)
 
     @property
     def shown(self):
@@ -77,13 +79,13 @@ class Progress(UIComponent):
     
     @shown.setter
     def shown(self, val):
-        if self._shown and not val:
+        if not val:
             self.toggleframe.grid_remove()
-            self.btn_toggle.config(text='Show progress')
-        elif not self.shown and val:
+            self.btn_toggle.config(text=getTranslationKey(self._lang, 'progress.showProgress'))
+        else:
             self.toggleframe.grid(row=1, column=0)
             self.update(self._last_interval)
-            self.btn_toggle.config(text='Hide progress')
+            self.btn_toggle.config(text=getTranslationKey(self._lang, 'progress.hideProgress'))
 
         self._shown = val
 
@@ -132,17 +134,20 @@ class Progress(UIComponent):
             self.lbl_eta.config(text='ETA: {}'.format(_timeformat(eta)))
 
     def progress_saved(self):
-        self.btn_save.config(text='Successfully saved!')
-        self.frame.after(500, lambda: self.btn_save.config(text='Save progress'))
+        self.btn_save.config(text=getTranslationKey(self._lang, 'progress.didSaveProgress'))
+        self.frame.after(500, lambda: self.btn_save.config(text=getTranslationKey(self._lang, 'progress.saveProgress')))
 
-    def update_nightmode_state(self, enabled):
-        self.frame.config(bg=colors.BACKGROUND[enabled])
-        self.btn_toggle.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
-        self.toggleframe.config(bg=colors.BACKGROUND[enabled])
-        self.lbl_eta.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled])
-        self.lbl_progdata.config(bg=colors.BACKGROUND[enabled], fg=colors.TEXT[enabled])
-        self.btn_save.config(bg=colors.BUTTON[enabled], fg=colors.TEXT[enabled])
-        self.style.configure('wbwr.Horizontal.TProgressbar', background=colors.TEXT[enabled], troughcolor=colors.DISPLAY[enabled])
+    def update_state(self, state):
+        self._lang = state.language
+        self.shown = self.shown  # Update show/hide button's text
+
+        self.frame.config(bg=colors.BACKGROUND[state.theme])
+        self.btn_toggle.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme])
+        self.toggleframe.config(bg=colors.BACKGROUND[state.theme])
+        self.lbl_eta.config(bg=colors.BACKGROUND[state.theme], fg=colors.TEXT[state.theme])
+        self.lbl_progdata.config(bg=colors.BACKGROUND[state.theme], fg=colors.TEXT[state.theme])
+        self.btn_save.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme], text=getTranslationKey(state.language, 'progress.saveProgress'))
+        self.style.configure('wbwr.Horizontal.TProgressbar', background=colors.TEXT[state.theme], troughcolor=colors.DISPLAY[state.theme])
 
     def get_tk_widget(self):
         return self.frame
