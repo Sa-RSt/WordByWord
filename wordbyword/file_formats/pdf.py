@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import pdfminer.high_level
 from pdfminer.pdftypes import PSException
 from string import whitespace

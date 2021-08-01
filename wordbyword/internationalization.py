@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # A dict with the currently supported languages.
 # The keys are the two-letter language codes, and the values are
 # the human readable names of the languages.

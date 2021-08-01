@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from . import FileReader, check_extension, File
 
 class TXTFileReader(FileReader):

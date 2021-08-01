@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from .txt import TXTFileReader
 from .pdf import PDFFileReader
 from .wbwr import WBWRFileReader

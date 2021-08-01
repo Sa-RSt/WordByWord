@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from . import UIComponent
 from tkinter import Button
 from . import colors

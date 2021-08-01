@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Colors here are represented in the form (Light mode, Dark mode)
 
 BACKGROUND = ('#f0f0f0', '#182541')

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from math import copysign
 from re import compile
 from time import perf_counter

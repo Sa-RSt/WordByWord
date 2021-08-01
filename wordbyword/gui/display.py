@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from . import UIComponent
 from tkinter.ttk import Label, Style
 from tkinter import StringVar, Frame

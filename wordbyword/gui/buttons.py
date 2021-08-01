@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from . import UIComponent
 from tkinter import Frame, Button, PhotoImage
 import os

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from ..internationalization import getTranslationKey
 from .state import State
 from . import UIComponent

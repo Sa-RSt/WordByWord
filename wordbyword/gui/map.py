@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from . import UIComponent
 from .comments import CommentList
 from ..tokenization import split_tokens

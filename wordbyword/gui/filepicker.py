@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 from tkinter import Frame, Button, Label
 from tkinter.filedialog import askopenfilename

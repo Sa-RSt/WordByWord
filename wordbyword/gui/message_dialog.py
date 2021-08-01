@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from tkinter import Toplevel
 from tkinter import Label
 from tkinter.simpledialog import Dialog

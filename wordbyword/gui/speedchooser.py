@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from tkinter import Frame, Label, IntVar, Scale
 from wordbyword.internationalization import getTranslationKey
 from . import colors
