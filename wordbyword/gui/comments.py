@@ -19,9 +19,7 @@ class Comment(UIComponent):
         self.frame = Frame(tkparent)
 
         self.textw = Text(self.frame, width=40, height=4)
-        self.textw.bind('<FocusIn>', self._hightlight)
         self.textw.bind('<Button-1>', self._hightlight)
-        self.textw.bind('<FocusOut>', lambda x: self.trigger('highlight', None))
         self.textw.grid(row=0, column=0, columnspan=11)
 
         self.span = span
@@ -42,6 +40,7 @@ class Comment(UIComponent):
 
     def on_btn_del(self):
         self.trigger('destroy', self)
+        self.trigger('highlight', None)
     
     def _hightlight(self, *_):
         self.trigger('highlight', self.span)
