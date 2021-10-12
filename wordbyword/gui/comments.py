@@ -50,6 +50,9 @@ class Comment(UIComponent):
         self.btn_del.config(bg='red', fg='white')
         self.frame.config(bg=colors.BACKGROUND[state.theme])
 
+    def focus(self):
+        self.textw.focus()
+
     def get_tk_widget(self):
         return self.frame
 
@@ -81,6 +84,7 @@ class CommentList(UIComponent):
     def add_comment(self, span):
         com = Comment(self.comframe, span)
         com.get_tk_widget().grid(row=self._currentRow, column=0)
+        com.focus()
         com.trigger('update-state', State(theme=self._nightmode, language=self._lang))
         com.on('highlight', self._bubble_highlight)
         com.on('destroy', self.del_comment)

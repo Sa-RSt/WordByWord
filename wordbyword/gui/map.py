@@ -81,6 +81,9 @@ class Map(UIComponent):
         self.comlist.get_tk_widget().grid(row=0, column=1, sticky='nsew')
         self.comlist.on('highlight', self._highlight_comment_span)
 
+        self.textw.bind('<Button-2>', lambda *_: self.comlist.on_add())
+        self.textw.bind('<Button-3>', lambda *_: self.comlist.on_add())
+
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(0, weight=1)
 

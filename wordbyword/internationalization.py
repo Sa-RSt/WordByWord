@@ -84,8 +84,8 @@ _keys = {
         'pt': 'Página: {}/{}'
     },
     'map.addComment': {
-        'en': '[+] Add comment/bookmark',
-        'pt': '[+] Adicionar comentário'
+        'en': '[+] Add comment/bookmark (or right-click with your mouse)',
+        'pt': '[+] Adicionar comentário (ou use o botão direito do mouse)'
     },
     'map.addComment.noneSelected': {
         'en': 'Please use your cursor to select some text to comment on.',
