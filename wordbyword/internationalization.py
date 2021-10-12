@@ -76,8 +76,8 @@ _keys = {
     },
     ### [ Map ] ###
     'map.toCurrentWord': {
-        'en': 'Scroll to current word',
-        'pt': 'Visualizar a palavra atual'
+        'en': 'Scroll to current word (Ctrl+V)',
+        'pt': 'Visualizar a palavra atual (Ctrl+V)'
     },
     'map.currentPage': {
         'en': 'Page: {}/{}',
@@ -93,8 +93,8 @@ _keys = {
     },
     ### [ Find word ] ###
     'map.find.button': {
-        'en': 'Find word...',
-        'pt': 'Encontrar palavra...'
+        'en': 'Find word... (Ctrl+F)',
+        'pt': 'Encontrar palavra... (Ctrl+F)'
     },
     'map.find.title': {
         'en': 'Find word - Word by Word Reader',
@@ -114,8 +114,8 @@ _keys = {
     },
     ### [ Go to page ] ###
     'map.goToPage.button': {
-        'en': 'Jump to page...',
-        'pt': 'Ir para página...'
+        'en': 'Jump to page... (Ctrl+Shift+F)',
+        'pt': 'Ir para página... (Ctrl+Shift+F)'
     },
     'map.goToPage.title': {
         'en': 'Jump to Page - Word by Word Reader',

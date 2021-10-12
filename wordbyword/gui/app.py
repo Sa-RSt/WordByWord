@@ -100,7 +100,7 @@ class App(UIComponent):
         self.root_window.protocol('WM_DELETE_WINDOW', self.on_quit_button)
         self.root_window.bind('<Control-f>', lambda _: self.map.on_find())
         self.root_window.bind('<Control-F>', lambda _: self.map.on_go_to_page())
-        #self.root_window.bind('<space>', lambda _: self.buttons.onpause())
+        self.root_window.bind('<Control-v>', lambda _: self.map.on_scroll_to_current())
 
         if filename is not None:
             self.filepicker.filename = filename
