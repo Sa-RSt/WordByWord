@@ -6,7 +6,8 @@ from ..tokenization import split_tokens
 from ..internationalization import getTranslationKey
 from tkinter import Frame, Button, Label, Toplevel, Entry, TclError
 from tkinter.scrolledtext import ScrolledText
-from tkinter.simpledialog import askstring, askinteger
+from tkinter.simpledialog import askinteger
+from tkinter.messagebox import showinfo
 from string import whitespace
 from . import colors
 
@@ -163,8 +164,11 @@ class Map(UIComponent):
             nonlocal current_idx
             word = w
             occurrences = [(x, x + len(word)) for x in _findall(word, self.text.lower())]
-            current_idx = 0
-            update_ui()
+            if occurrences:
+                current_idx = 0
+                update_ui()
+            else:
+                showinfo('Word by Word Reader', getTranslationKey(self._lang, 'map.find.nowords'))
 
         def update_ui():
             self.textw.tag_remove('hl_weak', '1.0', 'end')

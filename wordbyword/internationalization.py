@@ -112,6 +112,10 @@ _keys = {
         'en': 'Occurrences: {}/{}',
         'pt': 'Ocorrências: {}/{}'
     },
+    'map.find.nowords': {
+        'en': 'No occurrences were found.',
+        'pt': 'Nenhuma ocorrência foi encontrada.'
+    },
     ### [ Go to page ] ###
     'map.goToPage.button': {
         'en': 'Jump to page... (Ctrl+Shift+F)',
