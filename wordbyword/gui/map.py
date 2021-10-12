@@ -59,9 +59,8 @@ class Map(UIComponent):
 
         self.mapframe = Frame(self.frame)
 
-        self.textw = ScrolledText(self.mapframe, state='disabled', cursor='plus', width=100)
+        self.textw = ScrolledText(self.mapframe, state='disabled', cursor='plus', width=100, selectforeground='blue')
         self.textw.bind('<ButtonRelease-1>', self.on_click)
-        self.textw.tag_configure('currentToken', underline=True)
         self.textw.grid(row=0, column=0, columnspan=4, sticky='nsew')
 
         self.btn_scroll_to_current = Button(self.mapframe, text=getTranslationKey(self._lang, 'map.toCurrentWord'), command=self.on_scroll_to_current)
@@ -244,4 +243,5 @@ class Map(UIComponent):
         self.textw.config(bg=colors.DISPLAY[state.theme], fg=colors.TEXT[state.theme])
         self.frame.config(bg=colors.BACKGROUND[state.theme])
         self.mapframe.config(bg=colors.BACKGROUND[state.theme])
+        self.textw.tag_configure('currentToken', background=colors.TEXT[state.theme], foreground=colors.TEXT[not state.theme])
         self.comlist.trigger('update-state', state)
