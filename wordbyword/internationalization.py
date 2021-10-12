@@ -100,9 +100,17 @@ _keys = {
         'en': 'Find word - Word by Word Reader',
         'pt': 'Encontrar palavra - Word by Word Reader'
     },
-    'map.find.body': {
-        'en': 'Search for word or press ENTER to jump to the next occurence:',
-        'pt': 'Procure pela palavra ou pressione ENTER para ir à próxima ocorrência:'
+    'map.find.prev': {
+        'en': 'Previous',
+        'pt': 'Anterior'
+    },
+    'map.find.next': {
+        'en': 'Next',
+        'pt': 'Próxima'
+    },
+    'map.find.occurrences': {
+        'en': 'Occurrences: {}/{}',
+        'pt': 'Ocorrências: {}/{}'
     },
     ### [ Go to page ] ###
     'map.goToPage.button': {

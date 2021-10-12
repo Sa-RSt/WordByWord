@@ -4,7 +4,7 @@ from . import UIComponent
 from .comments import CommentList
 from ..tokenization import split_tokens
 from ..internationalization import getTranslationKey
-from tkinter import Frame, Button, Label, TclError
+from tkinter import Frame, Button, Label, Toplevel, Entry, TclError
 from tkinter.scrolledtext import ScrolledText
 from tkinter.simpledialog import askstring, askinteger
 from string import whitespace
@@ -135,26 +135,94 @@ class Map(UIComponent):
                 return (tok, position)
 
     def on_find(self):
-        try:
-            occurences = None
-            current = 0
-            haystack = self.text.lower()
-            old_needle = ''
-            while 1:
-                needle = askstring(getTranslationKey(self._lang, 'map.find.title'), getTranslationKey(self._lang, 'map.find.body'), initialvalue=old_needle).lower()
-                self.textw.tag_remove('highlight', '1.0', 'end')
-                if occurences is None or needle != old_needle:
-                    current = 0
-                    occurences = [x for x in _findall(needle, haystack)]
-                if needle == old_needle:
-                    current += 1
-                start, end = _tk_index(occurences[current]), _tk_index(occurences[current] + len(needle))
-                self.textw.tag_add('highlight', start, end)
-                self.textw.tag_configure('highlight', background='red')
-                self.textw.see(start)
-                old_needle = needle
-        finally:
-            self.textw.tag_remove('highlight', '1.0', 'end')
+        root = Toplevel(self.frame.master)
+        root.title(getTranslationKey(self._lang, 'map.find.title'))
+        frame = Frame(root)
+        frame.pack()
+
+        prev = Button(frame, text=getTranslationKey(self._lang, 'map.find.prev'))
+        prev.grid(row=0, column=0)
+
+        entry = Entry(frame)
+        entry.grid(row=0, column=1)
+        entry.focus()
+
+        nxt = Button(frame, text=getTranslationKey(self._lang, 'map.find.next'))
+        nxt.grid(row=0, column=2)
+
+        occlbl = Label(frame)
+        occlbl.grid(row=1, column=1)
+
+        word = None
+        occurrences = None
+        current_idx = None
+
+        def init_word(w):
+            nonlocal word
+            nonlocal occurrences
+            nonlocal current_idx
+            word = w
+            occurrences = [(x, x + len(word)) for x in _findall(word, self.text.lower())]
+            current_idx = 0
+            update_ui()
+
+        def update_ui():
+            self.textw.tag_remove('hl_weak', '1.0', 'end')
+            self.textw.tag_remove('hl_strong', '1.0', 'end')
+            for idx, span in enumerate(occurrences):
+                what_tag = 'hl_weak'
+                if idx == current_idx:
+                    what_tag = 'hl_strong'
+                    self.textw.see(_tk_index(span[0]))
+                
+                if abs(idx - current_idx) <= 3:  # Only render near words for performance
+                    self.textw.tag_add(what_tag, _tk_index(span[0]), _tk_index(span[1]))
+            
+            self.textw.tag_configure('hl_weak', background='gray')
+            self.textw.tag_configure('hl_strong', background='red', foreground='white')
+
+            occlbl.config(text=getTranslationKey(self._lang, 'map.find.occurrences').format(current_idx + 1, len(occurrences)))
+
+        def on_prev():
+            nonlocal current_idx
+
+            w = entry.get().strip().lower()
+            if not w:
+                return
+
+            if w != word:
+                return init_word(w)
+            
+            if current_idx > 0:
+                current_idx -= 1
+                update_ui()
+        
+        def on_next():
+            nonlocal current_idx
+            
+            w = entry.get().strip().lower()
+            if not w:
+                return
+
+            if w != word:
+                return init_word(w)
+            
+            if current_idx < len(occurrences)-1:
+                current_idx += 1
+                update_ui()
+        
+        def cleanup():
+            self.textw.tag_remove('hl_weak', '1.0', 'end')
+            self.textw.tag_remove('hl_strong', '1.0', 'end')
+            root.destroy()
+        
+        prev.config(command=on_prev)
+        nxt.config(command=on_next)
+        entry.bind('<Return>', lambda *_: on_next())
+
+        root.resizable(False, False)
+        root.grab_set()
+        root.protocol('WM_DELETE_WINDOW', cleanup)
     
     def get_page_starters(self):
         '''Return a list with the indices of the first characters of all pages.'''
