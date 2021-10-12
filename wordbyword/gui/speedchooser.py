@@ -16,7 +16,7 @@ class SpeedChooser(UIComponent):
         self.label = Label(self.frame, text='Words per minute: ')
         self.label.grid(row=0, column=0)
 
-        self.scale = Scale(self.frame, from_=60, to=600, command=self._command, orient='horizontal', length=150)
+        self.scale = Scale(self.frame, from_=30, to=750, resolution=5, command=self._command, orient='horizontal', length=150)
         self.scale.grid(row=0, column=1)
 
         self.on('update-state', self.update_state)
