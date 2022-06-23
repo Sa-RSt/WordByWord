@@ -4,7 +4,7 @@ from . import UIComponent
 from .comments import CommentList
 from ..tokenization import split_tokens
 from ..internationalization import getTranslationKey
-from tkinter import Frame, Button, Label, Toplevel, Entry, TclError
+from tkinter import Frame, Button, Label, Tcl, Toplevel, Entry, TclError
 from tkinter.scrolledtext import ScrolledText
 from tkinter.simpledialog import askinteger
 from tkinter.messagebox import showinfo
@@ -279,25 +279,36 @@ class Map(UIComponent):
             self.textw.tag_configure('comhl', background='green')
             self.textw.see(_tk_index(span[0]))
 
+    def _click_to_change_position(self, evt):
+        self.comlist.trigger('update-selection', None)
+
+        idx = self.textw.index('@{},{}'.format(evt.x, evt.y))
+        line_s, col_s = idx.split('.')
+        line = int(line_s)
+        col = int(col_s)
+        int_idx = _to_int_index(self.text, line, col)
+        self.current_token, position = self.get_token_by_character_index(int_idx)
+        self.trigger('token-change', position)
+
     def on_click(self, evt):
         try:
-            self.textw.selection_get()
+            if not self.textw.selection_get():
+                self._click_to_change_position(evt)
+                return
         except TclError:
-            self.comlist.trigger('update-selection', None)
-
-            idx = self.textw.index('@{},{}'.format(evt.x, evt.y))
-            line_s, col_s = idx.split('.')
-            line = int(line_s)
-            col = int(col_s)
-            int_idx = _to_int_index(self.text, line, col)
-            self.current_token, position = self.get_token_by_character_index(int_idx)
-            self.trigger('token-change', position)
+            self._click_to_change_position(evt)
+            return
         else:
-            selfirst_line_s, selfirst_col_s = self.textw.index('sel.first').split('.')
-            sellast_line_s, sellast_col_s = self.textw.index('sel.last').split('.')
-            selfirst_line, selfirst_col, sellast_line, sellast_col = int(selfirst_line_s), int(selfirst_col_s), int(sellast_line_s), int(sellast_col_s)
-            selfirst, sellast = _to_int_index(self.text, selfirst_line, selfirst_col), _to_int_index(self.text, sellast_line, sellast_col)
-            self.comlist.trigger('update-selection', (selfirst, sellast))
+            try:
+                selfirst_line_s, selfirst_col_s = self.textw.index('sel.first').split('.')
+                sellast_line_s, sellast_col_s = self.textw.index('sel.last').split('.')
+            except TclError:
+                self._click_to_change_position(evt)
+                return
+            else:
+                selfirst_line, selfirst_col, sellast_line, sellast_col = int(selfirst_line_s), int(selfirst_col_s), int(sellast_line_s), int(sellast_col_s)
+                selfirst, sellast = _to_int_index(self.text, selfirst_line, selfirst_col), _to_int_index(self.text, sellast_line, sellast_col)
+                self.comlist.trigger('update-selection', (selfirst, sellast))
 
     def _current_token_tk_span(self):
         '''

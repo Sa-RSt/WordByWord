@@ -20,6 +20,7 @@ DEFAULT_SETTINGS = {
     'blink_warning_shown': False,
     'theme': 1,
     'speed': 300,
+    'wpf': 4,
     'language': _lang
 }
 

@@ -6,7 +6,9 @@ from collections import namedtuple
 
 Token = namedtuple('Token', 'span word')
 
-token_split_pat = re.compile(r'\S+')
+# Hyphen codes source: https://jkorpela.fi/dashes.html
+hyphens = '\u058a\u05be\u2010\u2011\u2012\u2013\u2014\u2015\u2053\u207b\u208b\u2212\u2e17\u2e3a\u2e3b\u301c\u3030\u30a0\ufe31\ufe32\ufe58\ufe63\uff0d|-'
+token_split_pat = re.compile(r'[{H}]*[^\s{H}]+[{H}]*'.format(H=hyphens))
 
 def split_tokens(text):
     '''

@@ -59,8 +59,8 @@ class Progress(UIComponent):
         self.lbl_progdata = Label(self.toggleframe)
         self.lbl_progdata.grid(row=1, column=0, sticky='nsew')
 
-        self.lbl_eta = Label(self.toggleframe)
-        self.lbl_eta.grid(row=1, column=1, sticky='nsew')
+        #self.lbl_eta = Label(self.toggleframe)
+        #self.lbl_eta.grid(row=1, column=1, sticky='nsew')
 
         self.toggleframe.grid(row=1, column=0)
 
@@ -123,17 +123,17 @@ class Progress(UIComponent):
 
         self._last_interval = interval
         if self.shown:
-            percent = 100*(self.current+1)/self.total
+            percent = 100*(self.current+1)/(1+self.total)
             self.lbl_progdata.config(text='({:.1f}%)'.format(percent))
             self.progbar.config(value=int(percent))
             
-            remaining = self.total - self.current
-            words_per_second = 1000/interval
+            #remaining = self.total - self.current
+            #words_per_second = 1000/interval
             # Since words with punctuation are displayed 1.75x longer,
             # multiplying by 1.3 will give us a rough estimate.
-            eta = 1.3 * remaining / words_per_second
+            #eta = 1.3 * remaining / words_per_second
 
-            self.lbl_eta.config(text='ETA: {}'.format(_timeformat(eta)))
+            #self.lbl_eta.config(text='ETA: {}'.format(_timeformat(eta)))
 
     def progress_saved(self):
         self.btn_save.config(text=getTranslationKey(self._lang, 'progress.didSaveProgress'))
@@ -146,7 +146,7 @@ class Progress(UIComponent):
         self.frame.config(bg=colors.BACKGROUND[state.theme])
         self.btn_toggle.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme])
         self.toggleframe.config(bg=colors.BACKGROUND[state.theme])
-        self.lbl_eta.config(bg=colors.BACKGROUND[state.theme], fg=colors.TEXT[state.theme])
+        #self.lbl_eta.config(bg=colors.BACKGROUND[state.theme], fg=colors.TEXT[state.theme])
         self.lbl_progdata.config(bg=colors.BACKGROUND[state.theme], fg=colors.TEXT[state.theme])
         self.btn_save.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme], text=getTranslationKey(state.language, 'progress.saveProgress'))
         self.style.configure('wbwr.Horizontal.TProgressbar', background=colors.TEXT[state.theme], troughcolor=colors.DISPLAY[state.theme])

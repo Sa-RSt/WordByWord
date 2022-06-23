@@ -42,8 +42,8 @@ class App(UIComponent):
     def __init__(self, tkparent, root_window, assets_path, filename):
         super(App, self).__init__()
 
-        self._interval_multiplier = 1
         self._state = State(theme=Settings['theme'], language=Settings['language'])
+        self._previous_offset = 1
 
         self.root_window = root_window
 
@@ -68,6 +68,7 @@ class App(UIComponent):
         self.speed_chooser = SpeedChooser(self.frame)
         self.speed_chooser.get_tk_widget().grid(row=0, column=2, sticky='ne')
         self.speed_chooser.speed = Settings['speed']
+        self.speed_chooser.words_per_frame = Settings['wpf']
         self.speed_chooser.on('speed-change', self.on_speed_change)
 
         self.filepicker = Filepicker(self.frame)
@@ -100,7 +101,7 @@ class App(UIComponent):
         self.root_window.protocol('WM_DELETE_WINDOW', self.on_quit_button)
         self.root_window.bind('<Control-f>', lambda _: self.map.on_find())
         self.root_window.bind('<Control-F>', lambda _: self.map.on_go_to_page())
-        self.root_window.bind('<Control-v>', lambda _: self.map.on_scroll_to_current())
+        self.root_window.bind('<Control-g>', lambda _: self.map.on_scroll_to_current())
 
         if filename is not None:
             self.filepicker.filename = filename
@@ -115,29 +116,33 @@ class App(UIComponent):
     
     def token_change(self, position):
         self.position = position - 1  # Position will increase by 1 on update.
-        self.update_display()
+        self.update_display(1)
     
     def updateloop(self):
         start = perf_counter()
 
         if not self.buttons.paused:
-            self._interval_multiplier = self.update_display()
+            self._previous_offset = self.update_display(self._previous_offset)
         
         elapsed = perf_counter() - start
-        self.frame.after(int(self._interval_multiplier * (self.speed_chooser.interval - elapsed*1000) / abs(self.buttons.factor)), self.updateloop)
+        self.frame.after(int((self.speed_chooser.interval - elapsed*1000) / abs(self.buttons.factor)), self.updateloop)
 
-    def update_display(self):
-        newpos = int(self.position + copysign(1, self.buttons.factor))
+    def update_display(self, offset):
+        newpos = int(self.position + copysign(offset, self.buttons.factor))
         if newpos < len(self.tokens) and newpos >= 0:
             self.position = newpos
             self.progress.current = self.position
-            tok = self.tokens[self.position]
-            self.display.content = tok.word
-            self.map.current_token = tok
+            toks_to_display = []
+            lim = min(len(self.tokens), self.speed_chooser.words_per_frame + self.position)
+            for tok in range(self.position, lim):
+                toks_to_display.append(self.tokens[tok])
+                if has_punctuation(self.tokens[tok].word):
+                    break
+            if toks_to_display:
+                self.map.current_token = toks_to_display[0]
+            self.display.content = ' '.join([x.word for x in toks_to_display])
             self.progress.update(self.speed_chooser.interval)
-
-            if has_punctuation(tok.word):
-                return 1.75
+            return len(toks_to_display)
         return 1
 
     def will_pick_file(self):
@@ -167,7 +172,7 @@ class App(UIComponent):
                 self.set_contents(content.text)
                 self.position = content.current_word
                 self.map.comlist.load_comments(content.comments)
-                self.update_display()
+                self.update_display(1)
                 
         finally:
             mbox.destroy()
@@ -179,7 +184,7 @@ class App(UIComponent):
         self.position = -1  # self.update_display increments the position, so it will be set to 0
                             # after the first update.
         self.buttons.paused = True
-        self.update_display()
+        self.update_display(1)
     
     def save_progress(self):
         fname = self.filepicker.filename
@@ -201,6 +206,7 @@ class App(UIComponent):
     def on_speed_change(self):
         self.progress.update(self.speed_chooser.interval)
         Settings['speed'] = self.speed_chooser.speed
+        Settings['wpf'] = self.speed_chooser.words_per_frame
 
     def on_quit_button(self):
         self.buttons.paused = True
@@ -223,7 +229,6 @@ class App(UIComponent):
     def terminate_app(self):
         '''Exit the program.'''
         self.root_window.destroy()
-        Settings.save()
         
     def update_state(self, state):
         self._state = state

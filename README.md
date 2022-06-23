@@ -1,2 +1,3 @@
-# WordByWord
-Read e-books faster, without needing to move your eyes.
+# WordByWord Reader
+## Agilidade e Foco
+## Fast and Easy

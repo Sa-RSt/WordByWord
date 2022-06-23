@@ -84,8 +84,8 @@ _keys = {
         'pt': 'Página: {}/{}'
     },
     'map.addComment': {
-        'en': '[+] Add comment/bookmark (or right-click with your mouse)',
-        'pt': '[+] Adicionar comentário (ou use o botão direito do mouse)'
+        'en': '[+] Add comment/bookmark',
+        'pt': '[+] Adicionar comentário'
     },
     'map.addComment.noneSelected': {
         'en': 'Please use your cursor to select some text to comment on.',
@@ -130,9 +130,13 @@ _keys = {
         'pt': 'Página atual: {}/{} | Insira o número da página abaixo:'
     },
     ### [ Speed chooser ] ###
-    'speedChooser.wordsPerMinute': {
-        'en': 'Words per minute: ',
-        'pt': 'Palavras por minuto: '
+    'speedChooser.framesPerMinute': {
+        'en': 'Chunks per minute: ',
+        'pt': 'Chunks por minuto: '
+    },
+    'speedChooser.wordsPerFrame': {
+        'en': 'Words per chunk: ',
+        'pt': 'Palavras por chunk: '
     },
     ### [ Progress ] ###
     'progress.showProgress': {

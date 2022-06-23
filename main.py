@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import os
+import atexit
 
 from wordbyword.gui.app import App
 from wordbyword.gui.window import create_main_window
+from wordbyword.settings import Settings
 from sys import argv
+
+
+@atexit.register
+def save_all_settings():
+    Settings.save()
+
 
 assets_path = os.path.join(os.path.dirname(__file__), 'assets')
 wnd = create_main_window(assets_path)
