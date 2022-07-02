@@ -25,6 +25,7 @@ from .language_chooser import LanguageChooser
 from . import colors
 from ..settings import Settings
 from ..internationalization import getTranslationKey, SUPPORTED_LANGUAGES
+from ..assets import AssetManager
 from .state import State
 
 DEFAULT_TEXT = 'The quick brown fox jumped over the lazy dog.'
@@ -41,6 +42,8 @@ def has_punctuation(word):
 class App(UIComponent):
     def __init__(self, tkparent, root_window, assets_path, filename):
         super(App, self).__init__()
+
+        self._asset_manager = AssetManager(assets_path)
 
         self._state = State(theme=Settings['theme'], language=Settings['language'])
         self._previous_offset = 1
@@ -61,7 +64,7 @@ class App(UIComponent):
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(3, weight=1)
 
-        self.progress = Progress(self.frame, len(split_tokens(DEFAULT_TEXT)))
+        self.progress = Progress(self.frame, len(split_tokens(DEFAULT_TEXT)), self._asset_manager)
         self.progress.get_tk_widget().grid(row=0, column=1, sticky='n')
         self.progress.on('save-progress', self.save_progress)
 
@@ -79,7 +82,7 @@ class App(UIComponent):
         self.display = Display(self.frame)
         self.display.get_tk_widget().grid(row=1, column=0, columnspan=3)
 
-        self.buttons = ButtonsComponent(self.frame, assets_path)
+        self.buttons = ButtonsComponent(self.frame, self._asset_manager)
         self.buttons.get_tk_widget().grid(row=2, column=0, columnspan=3)
 
         self.map = Map(self.frame)

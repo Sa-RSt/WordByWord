@@ -7,44 +7,28 @@ from . import colors
 from ..internationalization import getTranslationKey
 
 
-FRAME_WIDTH = 175
-FRAME_HEIGHT = 110  # Height normally
-FRAME_HEIGHT_COLLAPSED = 70  # Height when progress is hidden by the user
+FRAME_WIDTH = 350
+FRAME_HEIGHT = 110
 
-
-def _timeformat(seconds):
-    '''
-    Returns the given time, in seconds, formated as 'XXh YYm ZZs'.
-    '''
-    seconds = int(seconds)
-    minutes = seconds // 60
-    hours = minutes // 60
-    minutes = minutes % 60
-    seconds = seconds % 60
-    if hours == 0:
-        if minutes == 0:
-            return '{}s'.format(seconds)
-        else:
-            return '{}m {}s'.format(minutes, seconds)
-    else:
-        return '{}h {}m {}s'.format(hours, minutes, seconds)
 
 class Progress(UIComponent):
 
-    def __init__(self, tkparent, total):
+    def __init__(self, tkparent, total, asset_manager):
         '''
         @param total: The total number of words/tokens.
         '''
         super(Progress, self).__init__()
 
         self._lang = 'en'
+        self._nightmode = True
+        self._asset_manager = asset_manager
         self._shown = True
         self.total = total
         self._last_interval = 0
         self.current = 0
         self.frame = Frame(tkparent, width=FRAME_WIDTH, height=FRAME_HEIGHT)
 
-        self.btn_toggle = Button(self.frame, text='Hide progress', command=self.on_toggle)
+        self.btn_toggle = Button(self.frame, command=self.on_toggle)
         self.btn_toggle.grid(row=0, column=0)
 
         self.toggleframe = Frame(self.frame)
@@ -54,24 +38,24 @@ class Progress(UIComponent):
         self.style.configure('wbwr.Horizontal.TProgressbar')
 
         self.progbar = Progressbar(self.toggleframe, mode='determinate', orient='horizontal', length=100, value=1, style='wbwr.Horizontal.TProgressbar')
-        self.progbar.grid(row=0, column=0, sticky='nsew', columnspan=2)
+        self.progbar.grid(row=0, column=0, sticky='nsew')
 
         self.lbl_progdata = Label(self.toggleframe)
-        self.lbl_progdata.grid(row=1, column=0, sticky='nsew')
+        self.lbl_progdata.grid(row=0, column=1, sticky='nsew')
 
-        #self.lbl_eta = Label(self.toggleframe)
-        #self.lbl_eta.grid(row=1, column=1, sticky='nsew')
+        self.toggleframe.grid(row=0, column=2)
 
-        self.toggleframe.grid(row=1, column=0)
+        self.btn_save = Button(self.frame, command=lambda: self.trigger('save-progress'))
+        self.btn_save.grid(row=0, column=1)
 
-        self.btn_save = Button(self.frame, text='Save progress', command=lambda: self.trigger('save-progress'))
-        self.btn_save.grid(row=2, column=0)
-
-        self.frame.rowconfigure(1, weight=1)
+        msgf = Frame(self.frame)
+        msgf.grid(row=1, column=0, columnspan=3)
+        self.msg_saved = Label(msgf)
+        self.msg_saved.grid(sticky='nsew')
+        
+        self.frame.grid_propagate(False)
 
         self.on('progress-saved', self.progress_saved)
-
-        self.frame.grid_propagate(False)
 
         self.on('update-state', self.update_state)
 
@@ -81,13 +65,14 @@ class Progress(UIComponent):
     
     @shown.setter
     def shown(self, val):
-        if not val:
-            self.toggleframe.grid_remove()
-            self.btn_toggle.config(text=getTranslationKey(self._lang, 'progress.showProgress'))
-        else:
-            self.toggleframe.grid(row=1, column=0)
+        theme = self._asset_manager.theme(self._nightmode)
+        if val:
+            self.toggleframe.grid(row=0, column=2)
             self.update(self._last_interval)
-            self.btn_toggle.config(text=getTranslationKey(self._lang, 'progress.hideProgress'))
+            self.btn_toggle.config(image=theme.get_prefixed_image('unsee.png'))
+        else:
+            self.toggleframe.grid_forget()
+            self.btn_toggle.config(image=theme.get_prefixed_image('see.png'))
 
         self._shown = val
 
@@ -109,10 +94,6 @@ class Progress(UIComponent):
 
     def on_toggle(self):
         self.shown = not self.shown
-        if self.shown:
-            self.frame.config(height=FRAME_HEIGHT)
-        else:
-            self.frame.config(height=FRAME_HEIGHT_COLLAPSED)
 
     def update(self, interval):
         '''
@@ -136,19 +117,29 @@ class Progress(UIComponent):
             #self.lbl_eta.config(text='ETA: {}'.format(_timeformat(eta)))
 
     def progress_saved(self):
-        self.btn_save.config(text=getTranslationKey(self._lang, 'progress.didSaveProgress'))
-        self.frame.after(500, lambda: self.btn_save.config(text=getTranslationKey(self._lang, 'progress.saveProgress')))
+        theme = self._asset_manager.theme(self._nightmode)
+
+        def restore():
+            self.btn_save.config(image=theme.get_prefixed_image('save.png'))
+            self.msg_saved.config(text='')
+
+
+        self.btn_save.config(image=theme.get_prefixed_image('save_ok.png'))
+        self.msg_saved.config(text=getTranslationKey(self._lang, 'progress.didSaveProgress'))
+        self.frame.after(500, restore)
 
     def update_state(self, state):
         self._lang = state.language
-        self.shown = self.shown  # Update show/hide button's text
+        self._nightmode = state.theme
+        self.shown = self.shown  # Update show/hide button's images (theme is considered here)
+
+        theme = self._asset_manager.theme(self._nightmode)
 
         self.frame.config(bg=colors.BACKGROUND[state.theme])
-        self.btn_toggle.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme])
         self.toggleframe.config(bg=colors.BACKGROUND[state.theme])
-        #self.lbl_eta.config(bg=colors.BACKGROUND[state.theme], fg=colors.TEXT[state.theme])
+        self.msg_saved.config(bg=colors.BACKGROUND[state.theme], fg=colors.TEXT[state.theme])
         self.lbl_progdata.config(bg=colors.BACKGROUND[state.theme], fg=colors.TEXT[state.theme])
-        self.btn_save.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme], text=getTranslationKey(state.language, 'progress.saveProgress'))
+        self.btn_save.config(image=theme.get_prefixed_image('save.png'))
         self.style.configure('wbwr.Horizontal.TProgressbar', background=colors.TEXT[state.theme], troughcolor=colors.DISPLAY[state.theme])
 
     def get_tk_widget(self):
