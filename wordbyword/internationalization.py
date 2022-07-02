@@ -9,6 +9,11 @@ SUPPORTED_LANGUAGES = {
 }
 
 _keys = {
+    ### [ Menus ] ###
+    'menu.settings': {
+        'en': 'Settings',
+        'pt': 'Configurações'
+    },
     ### [ Health & Safety ] ###
     'healthAndSafety.buttonText': {
         'en': 'HEALTH & SAFETY WARNING',
@@ -156,13 +161,9 @@ _keys = {
         'pt': 'Salvo com sucesso!'
     },
     ### [ Theme toggle ] ###
-    'themeToggle.lightTheme': {
-        'en': 'Light theme',
-        'pt': 'Tema claro'
-    },
-    'themeToggle.darkTheme': {
-        'en': 'Dark theme',
-        'pt': 'Tema escuro'
+    'themeToggle.changeTheme': {
+        'en': 'Toggle night mode',
+        'pt': 'Ativar/desativar modo noturno'
     }
 }
 

@@ -16,7 +16,7 @@ class _lang:
 class LanguageChooser(UIComponent):
     def __init__(self, tkparent, languages):
         super(LanguageChooser, self).__init__()
-        self.menu = Menu(tkparent)
+        self.menu = Menu(tkparent, tearoff=0)
         for code, human_name in languages.items():
             self.menu.add_command(label=human_name, command=_lang(code, self).trigger)
     

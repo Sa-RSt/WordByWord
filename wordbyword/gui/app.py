@@ -9,7 +9,6 @@ from tkinter.messagebox import showerror, askyesnocancel, showwarning
 
 from ..file_formats import check_extension, File
 from ..file_formats.jwbw import JWBWFileIO
-from ..file_formats.wbwr import WBWRFileReader
 from ..file_formats.read_file import read_file
 from ..tokenization import split_tokens
 from . import UIComponent
@@ -20,8 +19,8 @@ from .map import Map
 from .message_dialog import MessageDialog
 from .progress import Progress
 from .speedchooser import SpeedChooser
-from .nightmode_toggle import NightmodeToggle
-from .language_chooser import LanguageChooser
+from .settings_menu import SettingsMenu
+from .language_menu import LanguageChooser
 from . import colors
 from ..settings import Settings
 from ..internationalization import getTranslationKey, SUPPORTED_LANGUAGES
@@ -89,9 +88,9 @@ class App(UIComponent):
         self.map.on('token-change', self.token_change)
         self.map.get_tk_widget().grid(row=3, column=0, columnspan=3)
 
-        self.nightmode_toggle = NightmodeToggle(self.frame)
-        self.nightmode_toggle.on('nightmode-state', lambda theme: self.update_state(State(theme=theme, language=self._state.language)))
-        self.nightmode_toggle.get_tk_widget().grid(row=4, column=2)
+        self.settings_menu = SettingsMenu(self.menu, 2)
+        self.settings_menu.on('nightmode-state', lambda theme: self.update_state(State(theme=theme, language=self._state.language)))
+        self.menu.add_cascade(**self.settings_menu.to_menu_cascade())
 
         self.health_and_safety = Button(self.frame, text=getTranslationKey(self._state.language, 'healthAndSafety.buttonText'), command=self.show_health_and_safety_warning)
         self.health_and_safety.grid(row=4, column=1, pady=(20, 0))
@@ -110,7 +109,7 @@ class App(UIComponent):
             self.filepicker.filename = filename
         
         self.update_state(self._state)
-        self.nightmode_toggle.enabled = Settings['theme']
+        self.settings_menu.nightmode_toggle.enabled = Settings['theme']
 
         if not Settings['blink_warning_shown']:
             self.show_health_and_safety_warning()
@@ -241,7 +240,7 @@ class App(UIComponent):
 
         self.frame.config(bg=colors.BACKGROUND[state.theme])
         self.health_and_safety.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme], text=getTranslationKey(state.language, 'healthAndSafety.buttonText'))
-        for comp in [self.progress, self.speed_chooser, self.filepicker, self.display, self.buttons, self.map, self.nightmode_toggle]:
+        for comp in [self.progress, self.speed_chooser, self.filepicker, self.display, self.buttons, self.map, self.settings_menu]:
             comp.trigger('update-state', state)
 
     def show_health_and_safety_warning(self):
