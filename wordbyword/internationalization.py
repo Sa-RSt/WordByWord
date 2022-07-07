@@ -14,10 +14,23 @@ _keys = {
         'en': 'Settings',
         'pt': 'Configurações'
     },
+    'menu.about': {
+        'en': 'About',
+        'pt': 'Sobre'
+    },
+    ### [ About ] ###
+    'about.menu': {
+        'en': 'About WordByWord',
+        'pt': 'Sobre o WordByWord'
+    },
+    'about.body': {
+        'en': 'TODO',
+        'pt': 'TODO'
+    },
     ### [ Health & Safety ] ###
     'healthAndSafety.buttonText': {
-        'en': 'HEALTH & SAFETY WARNING',
-        'pt': 'AVISO DE SAÚDE E SEGURANÇA'
+        'en': 'Health & Safety Warning',
+        'pt': 'Aviso de Saúde e Segurança'
     },
     'healthAndSafety.title': {
         'en': 'IMPORTANT HEALTH & SAFETY WARNING',

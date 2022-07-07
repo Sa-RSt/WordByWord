@@ -20,6 +20,7 @@ from .message_dialog import MessageDialog
 from .progress import Progress
 from .speedchooser import SpeedChooser
 from .settings_menu import SettingsMenu
+from .about_menu import AboutMenu
 from .language_menu import LanguageChooser
 from . import colors
 from ..settings import Settings
@@ -55,6 +56,13 @@ class App(UIComponent):
         self.language_chooser.on('language', lambda language: self.update_state(State(theme=self._state.theme, language=language)))
         self.menu.add_cascade(label='Change Language/Mudar Idioma', menu=self.language_chooser.get_tk_widget())
 
+        self.settings_menu = SettingsMenu(self.menu, 2)
+        self.settings_menu.on('nightmode-state', lambda theme: self.update_state(State(theme=theme, language=self._state.language)))
+        self.menu.add_cascade(**self.settings_menu.to_menu_cascade())
+
+        self.about_menu = AboutMenu(self.menu, 3)
+        self.menu.add_cascade(**self.about_menu.to_menu_cascade())
+
         root_window.config(menu=self.menu)
 
         self.frame = Frame(tkparent)
@@ -87,13 +95,6 @@ class App(UIComponent):
         self.map = Map(self.frame)
         self.map.on('token-change', self.token_change)
         self.map.get_tk_widget().grid(row=3, column=0, columnspan=3)
-
-        self.settings_menu = SettingsMenu(self.menu, 2)
-        self.settings_menu.on('nightmode-state', lambda theme: self.update_state(State(theme=theme, language=self._state.language)))
-        self.menu.add_cascade(**self.settings_menu.to_menu_cascade())
-
-        self.health_and_safety = Button(self.frame, text=getTranslationKey(self._state.language, 'healthAndSafety.buttonText'), command=self.show_health_and_safety_warning)
-        self.health_and_safety.grid(row=4, column=1, pady=(20, 0))
 
         self.frame.after(self.speed_chooser.interval, self.updateloop)
 
@@ -239,12 +240,8 @@ class App(UIComponent):
         Settings.save()
 
         self.frame.config(bg=colors.BACKGROUND[state.theme])
-        self.health_and_safety.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme], text=getTranslationKey(state.language, 'healthAndSafety.buttonText'))
-        for comp in [self.progress, self.speed_chooser, self.filepicker, self.display, self.buttons, self.map, self.settings_menu]:
+        for comp in [self.progress, self.speed_chooser, self.filepicker, self.display, self.buttons, self.map, self.settings_menu, self.about_menu]:
             comp.trigger('update-state', state)
-
-    def show_health_and_safety_warning(self):
-        showwarning(getTranslationKey(self._state.language, 'healthAndSafety.title'), getTranslationKey(self._state.language, 'healthAndSafety.body'))
 
     def get_tk_widget(self):
         return self.frame
