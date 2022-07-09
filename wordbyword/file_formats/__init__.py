@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 import os
 from collections import namedtuple
 
+IMAGE_ANNO = '<\u23a3\1IMG\1\u23a4>'
+
 File = namedtuple('File', 'text current_word comments')
 
 def check_extension(filename, ext):

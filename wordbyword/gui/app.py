@@ -7,7 +7,7 @@ from tkinter import Frame, Button, Menu
 from tkinter.filedialog import asksaveasfilename
 from tkinter.messagebox import showerror, askyesnocancel, showwarning
 
-from ..file_formats import check_extension, File
+from ..file_formats import check_extension, File, IMAGE_ANNO
 from ..file_formats.jwbw import JWBWFileIO
 from ..file_formats.read_file import read_file
 from ..tokenization import split_tokens
@@ -32,7 +32,7 @@ DEFAULT_TEXT = 'The quick brown fox jumped over the lazy dog.'
 NON_WORD_START = compile(r'^\W')
 NON_WORD_END = compile(r'\W$')
 
-def has_punctuation(word):
+def has_punctuation_or_line_break(word):
     '''
     Check if the given word has any
     punctuation characters.
@@ -139,11 +139,15 @@ class App(UIComponent):
             lim = min(len(self.tokens), self.speed_chooser.words_per_frame + self.position)
             for tok in range(self.position, lim):
                 toks_to_display.append(self.tokens[tok])
-                if has_punctuation(self.tokens[tok].word):
+                if has_punctuation_or_line_break(self.tokens[tok].word):
                     break
             if toks_to_display:
                 self.map.current_token = toks_to_display[0]
-            self.display.content = ' '.join([x.word for x in toks_to_display])
+            
+            content = ' '.join([x.word for x in toks_to_display])
+            self.display.content = content
+            if content.strip() == IMAGE_ANNO:
+                self.buttons.paused = True
             self.progress.update(self.speed_chooser.interval)
             return len(toks_to_display)
         return 1

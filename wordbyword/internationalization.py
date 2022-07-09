@@ -92,6 +92,11 @@ _keys = {
         'en': 'Word by Word Reader legacy files',
         'pt': 'Arquivos de progresso do Word by Word Reader'
     },
+    ### [ Image display ] ###
+    'image.redirect': {
+        'en': '\u23a3Use an external PDF reader to view the image\u23a4',
+        'pt': '\u23a3Visualize a imagem em um leitor de PDF externo\u23a4'
+    },
     ### [ Map ] ###
     'map.toCurrentWord': {
         'en': 'Scroll to current word (Ctrl+V)',

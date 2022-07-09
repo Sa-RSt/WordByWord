@@ -1,16 +1,24 @@
 # -*- coding: utf-8 -*-
 
-import pdfminer.high_level
-from pdfminer.pdftypes import PSException
-from string import whitespace
+from pdfminer import high_level
+from pdfminer import layout
+import re
 
-from . import FileReader, check_extension, File
+from . import FileReader, check_extension, File, IMAGE_ANNO
 
 
-whitespace_excluding_form_feed = ''
-for c in whitespace:
-    if c != '\f':
-        whitespace_excluding_form_feed += c
+def _analyze_elements(out, elt):
+    if isinstance(elt, layout.LTComponent):
+        if isinstance(elt, layout.LTText):
+            text = re.sub(r'\s', ' ', elt.get_text().replace('\0', ' ')).strip()
+            while ' '*2 in text:
+                text = text.replace('  ', ' ')
+            out.append((elt.y0, text))
+        elif isinstance(elt, layout.LTImage):
+            out.append((elt.y0, IMAGE_ANNO))
+        elif isinstance(elt, layout.LTContainer):
+            for child in elt:
+                _analyze_elements(out, child)
 
 
 class PDFFileReader(FileReader):
@@ -22,9 +30,23 @@ class PDFFileReader(FileReader):
     def read(self, filename):
         if not check_extension(filename, '.pdf'):
             return None
+    
+        final_text = ''
 
-        raw = pdfminer.high_level.extract_text(filename)
-        for char in whitespace_excluding_form_feed:
-            while char + char in raw:
-                raw = raw.replace(char + char, char)
-        return File(text=raw.lstrip(whitespace_excluding_form_feed).rstrip(), current_word=0, comments=[])
+        for page in high_level.extract_pages(filename):
+            elements = []
+            for elt in page:
+               _analyze_elements(elements, elt)
+
+            # Sort elements by their y-coordinate in descending order.
+            # Essentially, this is the order in which the objects should be shown to the user.
+            elements.sort(reverse=True)
+
+            for _, text in elements:
+                final_text += text
+                final_text += '\n\n'
+            final_text += '\f' # end page
+
+        final_text = final_text[:-1] # remove trailing \f
+
+        return File(text=final_text, current_word=0, comments=[])
