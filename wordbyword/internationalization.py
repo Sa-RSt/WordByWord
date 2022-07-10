@@ -9,6 +9,15 @@ SUPPORTED_LANGUAGES = {
 }
 
 _keys = {
+    ### [ Global ] ###
+    'ok': {
+        'en': 'OK',
+        'pt': 'OK'
+    },
+    'cancel': {
+        'en': 'Cancel',
+        'pt': 'Cancelar'
+    },
     ### [ Menus ] ###
     'menu.settings': {
         'en': 'Settings',
@@ -182,6 +191,15 @@ _keys = {
     'themeToggle.changeTheme': {
         'en': 'Toggle night mode',
         'pt': 'Ativar/desativar modo noturno'
+    },
+    ### [ Font chooser ] ###
+    'fontChooser.changeFont': {
+        'en': 'Change font',
+        'pt': 'Alterar fonte'
+    },
+    'fontChooser.label': {
+        'en': 'Current font: {}',
+        'pt': 'Fonte atual: {}'
     }
 }
 

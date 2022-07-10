@@ -326,7 +326,7 @@ class Map(UIComponent):
         self.btn_page.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme], text=getTranslationKey(state.language, 'map.goToPage.button'))
         self.btn_scroll_to_current.config(bg=colors.BUTTON[state.theme], fg=colors.TEXT[state.theme], text=getTranslationKey(state.language, 'map.toCurrentWord'))
         self.lbl_page.config(bg=colors.BACKGROUND[state.theme], fg=colors.TEXT[state.theme])
-        self.textw.config(bg=colors.DISPLAY[state.theme], fg=colors.TEXT[state.theme])
+        self.textw.config(bg=colors.DISPLAY[state.theme], fg=colors.TEXT[state.theme], font=(state.font,))
         self.frame.config(bg=colors.BACKGROUND[state.theme])
         self.mapframe.config(bg=colors.BACKGROUND[state.theme])
         self.textw.tag_configure('currentToken', background=colors.TEXT[state.theme], foreground=colors.TEXT[not state.theme])

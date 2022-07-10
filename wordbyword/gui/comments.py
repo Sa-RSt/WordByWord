@@ -46,7 +46,7 @@ class Comment(UIComponent):
         self.trigger('highlight', self.span)
 
     def update_state(self, state):
-        self.textw.config(bg=colors.CONTROL_BUTTON[state.theme], fg=colors.TEXT[state.theme], insertbackground=colors.TEXT[state.theme])
+        self.textw.config(bg=colors.CONTROL_BUTTON[state.theme], fg=colors.TEXT[state.theme], insertbackground=colors.TEXT[state.theme], font=(state.font,))
         self.btn_del.config(bg='red', fg='white')
         self.frame.config(bg=colors.BACKGROUND[state.theme])
 

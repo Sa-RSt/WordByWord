@@ -45,7 +45,7 @@ class App(UIComponent):
 
         self._asset_manager = AssetManager(assets_path)
 
-        self._state = State(theme=Settings['theme'], language=Settings['language'])
+        self._state = State(theme=Settings['theme'], language=Settings['language'], font=Settings['font'])
         self._previous_offset = 1
 
         self.root_window = root_window
@@ -53,11 +53,12 @@ class App(UIComponent):
         self.menu = Menu(root_window)
 
         self.language_chooser = LanguageChooser(self.menu, SUPPORTED_LANGUAGES)
-        self.language_chooser.on('language', lambda language: self.update_state(State(theme=self._state.theme, language=language)))
+        self.language_chooser.on('language', lambda language: self.update_state(State(theme=self._state.theme, language=language, font=self._state.font)))
         self.menu.add_cascade(label='Change Language/Mudar Idioma', menu=self.language_chooser.get_tk_widget())
 
         self.settings_menu = SettingsMenu(self.menu, 2)
-        self.settings_menu.on('nightmode-state', lambda theme: self.update_state(State(theme=theme, language=self._state.language)))
+        self.settings_menu.on('nightmode-state', lambda theme: self.update_state(State(theme=theme, language=self._state.language, font=self._state.font)))
+        self.settings_menu.on('font-changed', lambda font: self.update_state(State(theme=self._state.theme, language=self._state.language, font=font)))
         self.menu.add_cascade(**self.settings_menu.to_menu_cascade())
 
         self.about_menu = AboutMenu(self.menu, 3)
@@ -241,11 +242,14 @@ class App(UIComponent):
         self._state = state
         Settings['theme'] = state.theme
         Settings['language'] = state.language
+        Settings['font'] = state.font
         Settings.save()
 
         self.frame.config(bg=colors.BACKGROUND[state.theme])
         for comp in [self.progress, self.speed_chooser, self.filepicker, self.display, self.buttons, self.map, self.settings_menu, self.about_menu]:
             comp.trigger('update-state', state)
+        
+        self.root_window.update()
 
     def get_tk_widget(self):
         return self.frame

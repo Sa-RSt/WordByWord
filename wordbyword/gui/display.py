@@ -23,7 +23,7 @@ class Display(UIComponent):
         self._iframe = Frame(self.frame, background='white')
         self._iframe.grid(row=0, column=0, padx=2, pady=2, sticky='nsew')
         self.style = Style(self.frame)
-        self._lbl = Label(self._iframe, textvariable=self._contentvar, style='Display.TLabel', font=('', 30), width=50, anchor='center')
+        self._lbl = Label(self._iframe, textvariable=self._contentvar, style='Display.TLabel', font=('serif', 30), width=50, anchor='center')
         self._lbl.pack(anchor='center')
 
         self.on('update-state', self.update_state)
@@ -43,6 +43,7 @@ class Display(UIComponent):
 
     def update_state(self, state):
         self._iframe.config(bg=colors.DISPLAY[state.theme])
+        self._lbl.configure(font=(state.font, 30))
         self.style.configure('Display.TLabel', background=colors.DISPLAY[state.theme], foreground=colors.TEXT[state.theme])
         self._lang = state.language
         if self._content.strip() == IMAGE_ANNO:

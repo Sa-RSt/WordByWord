@@ -21,7 +21,8 @@ DEFAULT_SETTINGS = {
     'theme': 1,
     'speed': 300,
     'wpf': 4,
-    'language': _lang
+    'language': _lang,
+    'font': 'serif'
 }
 
 class _settings_type(dict):
