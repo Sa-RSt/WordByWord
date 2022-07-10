@@ -114,7 +114,7 @@ class App(UIComponent):
         self.settings_menu.nightmode_toggle.enabled = Settings['theme']
 
         if not Settings['blink_warning_shown']:
-            self.show_health_and_safety_warning()
+            self.about_menu.show_health_and_safety_warning()
             Settings['blink_warning_shown'] = True
             Settings.save()
     
