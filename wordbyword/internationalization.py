@@ -200,6 +200,11 @@ _keys = {
     'fontChooser.label': {
         'en': 'Current font: {}',
         'pt': 'Fonte atual: {}'
+    },
+    ### [ Pause on image? ] ###
+    'pauseOnImage.checkbox': {
+        'en': 'Pause playback when an image is detected',
+        'pt': 'Pausar reprodução quando uma imagem for detectada'
     }
 }
 

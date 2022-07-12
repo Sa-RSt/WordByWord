@@ -22,7 +22,8 @@ DEFAULT_SETTINGS = {
     'speed': 300,
     'wpf': 4,
     'language': _lang,
-    'font': 'serif'
+    'font': 'serif',
+    'pause_on_image': True
 }
 
 class _settings_type(dict):

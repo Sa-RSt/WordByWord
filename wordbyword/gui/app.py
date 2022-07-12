@@ -56,9 +56,10 @@ class App(UIComponent):
         self.language_chooser.on('language', lambda language: self.update_state(State(theme=self._state.theme, language=language, font=self._state.font)))
         self.menu.add_cascade(label='Change Language/Mudar Idioma', menu=self.language_chooser.get_tk_widget())
 
-        self.settings_menu = SettingsMenu(self.menu, 2)
+        self.settings_menu = SettingsMenu(self.menu, 2, Settings['pause_on_image'])
         self.settings_menu.on('nightmode-state', lambda theme: self.update_state(State(theme=theme, language=self._state.language, font=self._state.font)))
         self.settings_menu.on('font-changed', lambda font: self.update_state(State(theme=self._state.theme, language=self._state.language, font=font)))
+        self.settings_menu.on('pause-on-image-cfg', self.pause_on_image_cfg)
         self.menu.add_cascade(**self.settings_menu.to_menu_cascade())
 
         self.about_menu = AboutMenu(self.menu, 3)
@@ -147,7 +148,7 @@ class App(UIComponent):
             
             content = ' '.join([x.word for x in toks_to_display])
             self.display.content = content
-            if content.strip() == IMAGE_ANNO:
+            if Settings['pause_on_image'] and content.strip() == IMAGE_ANNO:
                 self.buttons.paused = True
             self.progress.update(self.speed_chooser.interval)
             return len(toks_to_display)
@@ -210,6 +211,9 @@ class App(UIComponent):
         cw = max(self.position - 1, 0)  # Position will be incremented on each update
         fio = JWBWFileIO()
         fio.write(fname, File(text=self.map.text, current_word=cw, comments=self.map.comlist.dump_comments()))
+
+    def pause_on_image_cfg(self, will_pause):
+        Settings['pause_on_image'] = will_pause
 
     def on_speed_change(self):
         self.progress.update(self.speed_chooser.interval)
