@@ -66,6 +66,7 @@ class CommentList(UIComponent):
         self._currentSelection = None
         self._nightmode = False
         self._lang = 'en'
+        self._font = 'serif'
 
         self.frame = Frame(tkparent)
 
@@ -85,7 +86,7 @@ class CommentList(UIComponent):
         com = Comment(self.comframe, span)
         com.get_tk_widget().grid(row=self._currentRow, column=0)
         com.focus()
-        com.trigger('update-state', State(theme=self._nightmode, language=self._lang))
+        com.trigger('update-state', State(theme=self._nightmode, language=self._lang, font=self._font))
         com.on('highlight', self._bubble_highlight)
         com.on('destroy', self.del_comment)
         self._currentRow += 1
@@ -130,6 +131,7 @@ class CommentList(UIComponent):
     def update_state(self, state):
         self._nightmode = state.theme
         self._lang = state.language
+        self._font = state.font
 
         self.frame.config(bg=colors.BACKGROUND[state.theme])
         self.comframe.config(bg=colors.BACKGROUND[state.theme])

@@ -27,6 +27,19 @@ _keys = {
         'en': 'About',
         'pt': 'Sobre'
     },
+    ### [ View menu ] ###
+    'menu.view': {
+        'en': 'View',
+        'pt': 'Visualizar'
+    },
+    'view.fullscreen': {
+        'en': 'Fullscreen mode',
+        'pt': 'Modo tela cheia'
+    },
+    'view.focus': {
+        'en': 'Focus mode',
+        'pt': 'Modo focado'
+    },
     ### [ About ] ###
     'about.menu': {
         'en': 'About WordByWord',

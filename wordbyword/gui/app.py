@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from math import copysign
-from re import compile
+from re import compile, fullmatch
 from time import perf_counter
 from tkinter import Frame, Button, Menu
 from tkinter.filedialog import asksaveasfilename
@@ -20,6 +20,7 @@ from .message_dialog import MessageDialog
 from .progress import Progress
 from .speedchooser import SpeedChooser
 from .settings_menu import SettingsMenu
+from .view_menu import ViewMenu
 from .about_menu import AboutMenu
 from .language_menu import LanguageChooser
 from . import colors
@@ -47,6 +48,7 @@ class App(UIComponent):
 
         self._state = State(theme=Settings['theme'], language=Settings['language'], font=Settings['font'])
         self._previous_offset = 1
+        self._focus_mode = False
 
         self.root_window = root_window
 
@@ -62,7 +64,11 @@ class App(UIComponent):
         self.settings_menu.on('pause-on-image-cfg', self.pause_on_image_cfg)
         self.menu.add_cascade(**self.settings_menu.to_menu_cascade())
 
-        self.about_menu = AboutMenu(self.menu, 3)
+        self.view_menu = ViewMenu(self.menu, 3)
+        self.view_menu.on('view-mode', self.view_mode_update)
+        self.menu.add_cascade(**self.view_menu.to_menu_cascade())
+
+        self.about_menu = AboutMenu(self.menu, 4)
         self.menu.add_cascade(**self.about_menu.to_menu_cascade())
 
         root_window.config(menu=self.menu)
@@ -107,6 +113,7 @@ class App(UIComponent):
         self.root_window.bind('<Control-f>', lambda _: self.map.on_find())
         self.root_window.bind('<Control-F>', lambda _: self.map.on_go_to_page())
         self.root_window.bind('<Control-g>', lambda _: self.map.on_scroll_to_current())
+        self.root_window.bind('<Escape>', self.on_esc)
 
         if filename is not None:
             self.filepicker.filename = filename
@@ -119,6 +126,22 @@ class App(UIComponent):
             Settings['blink_warning_shown'] = True
             Settings.save()
     
+    def view_mode_update(self, viewmode):
+        fullscreen, focus = viewmode
+        self.root_window.attributes('-fullscreen', fullscreen)
+
+        if focus != self._focus_mode:
+            self._focus_mode = focus
+            self.display.trigger('focus-mode', focus)
+            if focus:
+                self.map.get_tk_widget().grid_forget()
+            else:
+                self.map.get_tk_widget().grid(row=3, column=0, columnspan=3)
+
+    def on_esc(self, *_, **__):
+        self.root_window.attributes('-fullscreen', False)
+        self.view_menu.fullscreen.set(False)
+
     def token_change(self, position):
         self.position = position - 1  # Position will increase by 1 on update.
         self.update_display(1)
@@ -250,7 +273,7 @@ class App(UIComponent):
         Settings.save()
 
         self.frame.config(bg=colors.BACKGROUND[state.theme])
-        for comp in [self.progress, self.speed_chooser, self.filepicker, self.display, self.buttons, self.map, self.settings_menu, self.about_menu]:
+        for comp in [self.progress, self.speed_chooser, self.filepicker, self.display, self.buttons, self.map, self.settings_menu, self.view_menu, self.about_menu]:
             comp.trigger('update-state', state)
         
         self.root_window.update()
