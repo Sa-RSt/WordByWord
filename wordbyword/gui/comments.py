@@ -18,9 +18,11 @@ class Comment(UIComponent):
 
         self.frame = Frame(tkparent)
 
-        self.textw = Text(self.frame, width=40, height=4)
+        self.tframe = Frame(self.frame, width=335, height=75)
+        self.textw = Text(self.tframe)
         self.textw.bind('<Button-1>', self._hightlight)
-        self.textw.grid(row=0, column=0, columnspan=11)
+        self.textw.place(relx=0, rely=0, relwidth=1, relheight=1)
+        self.tframe.grid(row=0, column=0, columnspan=11)
 
         self.span = span
 
