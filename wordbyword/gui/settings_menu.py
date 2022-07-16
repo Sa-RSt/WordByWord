@@ -96,7 +96,9 @@ class FontChooser(UIComponent):
 
         default_idx = 0
         font_map = dict()
-        for idx, family in enumerate(chain(['serif'], sorted(families()))):
+        fams = list(set(families()))
+        fams.sort()
+        for idx, family in enumerate(chain(['serif'], fams)):
             picker.insert('end', family)
             font_map[idx] = family
             if family == self._font:
@@ -108,18 +110,25 @@ class FontChooser(UIComponent):
 
         picker_frame.grid(row=0, column=0, columnspan=2, sticky='nsew', padx=20, pady=20)
 
+        preview = Label(root, text='The quick brown fox jumped over the lazy dog', font=(self._font,), anchor='center')
+        preview.grid(row=1, column=0, columnspan=2, padx=15, pady=10)
+
         def ok():
             font = font_map[picker.curselection()[0]]
             self._font = font
-            print(self._font)
             self.trigger('font-changed', font)
             root.destroy()
 
         def cancel():
             root.destroy()
 
-        Button(root, text=getTranslationKey(self._lang, 'ok'), command=ok).grid(row=1, column=0, padx=15, pady=15)
-        Button(root, text=getTranslationKey(self._lang, 'cancel'), command=cancel).grid(row=1, column=1, padx=15, pady=15)
+        def on_select(evt):
+            preview.config(font=(picker.selection_get(),))
+        
+        picker.bind('<<ListboxSelect>>', on_select)
+
+        Button(root, text=getTranslationKey(self._lang, 'ok'), command=ok).grid(row=2, column=0, padx=15, pady=15)
+        Button(root, text=getTranslationKey(self._lang, 'cancel'), command=cancel).grid(row=2, column=1, padx=15, pady=15)
 
         root.title(getTranslationKey(self._lang, 'fontChooser.changeFont'))
         root.resizable(False, False)
