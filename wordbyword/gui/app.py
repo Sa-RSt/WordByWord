@@ -86,7 +86,7 @@ class App(UIComponent):
         self.speed_chooser = SpeedChooser(self.frame)
         self.speed_chooser.get_tk_widget().grid(row=0, column=2, sticky='ne')
         self.speed_chooser.speed = Settings['speed']
-        self.speed_chooser.words_per_frame = Settings['wpf']
+        self.speed_chooser.chars_per_frame = Settings['cpf']
         self.speed_chooser.on('speed-change', self.on_speed_change)
 
         self.filepicker = Filepicker(self.frame)
@@ -161,15 +161,17 @@ class App(UIComponent):
             self.position = newpos
             self.progress.current = self.position
             toks_to_display = []
-            lim = min(len(self.tokens), self.speed_chooser.words_per_frame + self.position)
-            for tok in range(self.position, lim):
+            content = ''
+            for tok in range(self.position, len(self.tokens)):
+                if toks_to_display and len(content + ' ' + self.tokens[tok].word) - 1 > self.speed_chooser.chars_per_frame:
+                    break
                 toks_to_display.append(self.tokens[tok])
+                content += self.tokens[tok].word + ' '
                 if has_punctuation_or_line_break(self.tokens[tok].word):
                     break
             if toks_to_display:
                 self.map.current_token = toks_to_display[0]
-            
-            content = ' '.join([x.word for x in toks_to_display])
+            content = content[:-1]
             self.display.content = content
             if Settings['pause_on_image'] and content.strip() == IMAGE_ANNO:
                 self.buttons.paused = True
@@ -241,7 +243,7 @@ class App(UIComponent):
     def on_speed_change(self):
         self.progress.update(self.speed_chooser.interval)
         Settings['speed'] = self.speed_chooser.speed
-        Settings['wpf'] = self.speed_chooser.words_per_frame
+        Settings['wpf'] = self.speed_chooser.chars_per_frame
 
     def on_quit_button(self):
         self.buttons.paused = True

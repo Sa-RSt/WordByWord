@@ -180,8 +180,8 @@ _keys = {
         'pt': 'Chunks por minuto: '
     },
     'speedChooser.wordsPerFrame': {
-        'en': 'Words per chunk: ',
-        'pt': 'Palavras por chunk: '
+        'en': 'Characters per chunk: ',
+        'pt': 'Caracteres por chunk: '
     },
     ### [ Progress ] ###
     'progress.showProgress': {
