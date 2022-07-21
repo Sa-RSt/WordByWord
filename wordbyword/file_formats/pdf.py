@@ -7,12 +7,45 @@ import re
 from . import FileReader, check_extension, File, IMAGE_ANNO
 
 
+# Hyphen codes source: https://jkorpela.fi/dashes.html
+# Hyphens can break words at the end of a line. Dashes cannot.
+_HYPHENS = '\u058a\u05be\u2010\u2e17\ufe63\uff0d-'
+
+_linespace = re.compile('\n\\s')
+_spaceline = re.compile('\\s\n')
+_hyphenline = re.compile('[{}]\n'.format(_HYPHENS))
+_space = re.compile(r'\s')
+
+def _mend_hyphenation_and_collapse_spaces(text):
+    '''
+    Detect hyphens near newlines, which probably indicate that a single word
+    was breaked at the end of a line, and "mends" the words so that it is displayed as one.
+
+    Also collapses whitespace in a manner similar to HTML.
+    '''
+
+    while _linespace.search(text):
+        text = _linespace.sub('\n', text)
+    
+    while _spaceline.search(text):
+        text = _spaceline.sub('\n', text)
+    
+    while _hyphenline.search(text):
+        text = _hyphenline.sub('', text)
+    
+    text = _space.sub(' ', text.replace('\0', ' ')).strip()
+
+    while ' '*2 in text:
+        text = text.replace('  ', ' ')
+    
+    return text
+
+
 def _analyze_elements(out, elt):
     if isinstance(elt, layout.LTComponent):
         if isinstance(elt, layout.LTText):
-            text = re.sub(r'\s', ' ', elt.get_text().replace('\0', ' ')).strip()
-            while ' '*2 in text:
-                text = text.replace('  ', ' ')
+            t = elt.get_text()
+            text = _mend_hyphenation_and_collapse_spaces(t)
             out.append((elt.y0, text))
         elif isinstance(elt, layout.LTImage):
             out.append((elt.y0, IMAGE_ANNO))
