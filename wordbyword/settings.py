@@ -23,7 +23,8 @@ DEFAULT_SETTINGS = {
     'cpf': 20,
     'language': _lang,
     'font': 'serif',
-    'pause_on_image': True
+    'pause_on_image': True,
+    'font_size_focus': 45
 }
 
 class _settings_type(dict):

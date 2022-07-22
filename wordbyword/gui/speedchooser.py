@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from tkinter import Frame, Label, Scale
-from tkinter.ttk import Separator
 from wordbyword.internationalization import getTranslationKey
 from . import colors
 from . import UIComponent

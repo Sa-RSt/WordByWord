@@ -8,7 +8,6 @@ from . import colors
 from ..file_formats import IMAGE_ANNO
 
 FONT_SIZE_DEFAULT = 30
-FONT_SIZE_FOCUS = 45
 
 WIDTH_DEFAULT = 1300
 HEIGHT_DEFAULT = 50
@@ -28,6 +27,7 @@ class Display(UIComponent):
         self._lang = 'en'
         self._font = 'serif'
         self._focus = False
+        self._focus_font_sz = 45
         self._contentvar = StringVar()
         self._special_contentvar = StringVar()
 
@@ -42,6 +42,7 @@ class Display(UIComponent):
 
         self.on('update-state', self.update_state)
         self.on('focus-mode', self.update_focus_mode)
+        self.on('font-size-change', self.set_focus_mode_font_size)
 
     def _set_display(self, text, special):
         if special:
@@ -84,10 +85,16 @@ class Display(UIComponent):
         self._focus = focus
         if focus:
             self._iframe.config(width=WIDTH_FOCUS, height=HEIGHT_FOCUS)
-            self._set_font_size(FONT_SIZE_FOCUS)
+            self._set_font_size(self._focus_font_sz)
         else:
             self._iframe.config(width=WIDTH_DEFAULT, height=HEIGHT_DEFAULT)
             self._set_font_size(FONT_SIZE_DEFAULT)
+
+    def set_focus_mode_font_size(self, sz):
+        self._focus_font_sz = sz
+        if self._focus:
+            self._set_font_size(sz)
+
 
     def get_tk_widget(self):
         return self.frame

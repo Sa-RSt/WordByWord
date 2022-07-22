@@ -23,6 +23,7 @@ from .settings_menu import SettingsMenu
 from .view_menu import ViewMenu
 from .about_menu import AboutMenu
 from .language_menu import LanguageChooser
+from .font_size_slider import FontSizeSlider
 from . import colors
 from ..settings import Settings
 from ..internationalization import getTranslationKey, SUPPORTED_LANGUAGES
@@ -103,6 +104,10 @@ class App(UIComponent):
         self.map = Map(self.frame)
         self.map.on('token-change', self.token_change)
         self.map.get_tk_widget().grid(row=3, column=0, columnspan=3)
+        
+        self.font_size_slider = FontSizeSlider(self.frame, self._asset_manager, Settings['font_size_focus'])
+        self.font_size_slider.propagate_event_to('font-size-change', self.display)
+        self.font_size_slider.on('font-size-change', self._save_font_size)
 
         self.frame.after(self.speed_chooser.interval, self.updateloop)
 
@@ -126,6 +131,9 @@ class App(UIComponent):
             Settings['blink_warning_shown'] = True
             Settings.save()
     
+    def _save_font_size(self, sz):
+        Settings['font_size_focus'] = sz
+
     def view_mode_update(self, viewmode):
         fullscreen, focus = viewmode
         self.root_window.attributes('-fullscreen', fullscreen)
@@ -135,8 +143,10 @@ class App(UIComponent):
             self.display.trigger('focus-mode', focus)
             if focus:
                 self.map.get_tk_widget().grid_forget()
+                self.font_size_slider.get_tk_widget().grid(row=3, column=0, columnspan=4, pady=(10, 0))
             else:
                 self.map.get_tk_widget().grid(row=3, column=0, columnspan=3)
+                self.font_size_slider.get_tk_widget().grid_forget()
 
     def on_esc(self, *_, **__):
         self.root_window.attributes('-fullscreen', False)
@@ -274,8 +284,14 @@ class App(UIComponent):
         Settings['font'] = state.font
         Settings.save()
 
+        children = [
+            self.progress, self.speed_chooser, self.filepicker,
+            self.display, self.buttons, self.map, self.settings_menu,
+            self.view_menu, self.about_menu, self.font_size_slider
+        ]
+
         self.frame.config(bg=colors.BACKGROUND[state.theme])
-        for comp in [self.progress, self.speed_chooser, self.filepicker, self.display, self.buttons, self.map, self.settings_menu, self.view_menu, self.about_menu]:
+        for comp in children:
             comp.trigger('update-state', state)
         
         self.root_window.update()
