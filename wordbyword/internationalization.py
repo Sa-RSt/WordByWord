@@ -33,12 +33,12 @@ _keys = {
         'pt': 'Visualizar'
     },
     'view.fullscreen': {
-        'en': 'Fullscreen mode',
-        'pt': 'Modo tela cheia'
+        'en': 'Fullscreen mode (F11)',
+        'pt': 'Modo tela cheia (F11)'
     },
     'view.focus': {
-        'en': 'Focus mode',
-        'pt': 'Modo focado'
+        'en': 'Focus mode (double-click the word display)',
+        'pt': 'Modo focado (duplo-clique no mostrador de palavras)'
     },
     ### [ About ] ###
     'about.menu': {

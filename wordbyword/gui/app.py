@@ -96,6 +96,7 @@ class App(UIComponent):
         self.filepicker.on('will-pick-file', self.will_pick_file)
 
         self.display = Display(self.frame)
+        self.display.on('double-click', lambda: self.view_menu.toggle_focus())
         self.display.get_tk_widget().grid(row=1, column=0, columnspan=3)
 
         self.buttons = ButtonsComponent(self.frame, self._asset_manager)
@@ -115,9 +116,11 @@ class App(UIComponent):
         self.position = 0
 
         self.root_window.protocol('WM_DELETE_WINDOW', self.on_quit_button)
+        self.root_window.bind('<space>', lambda _: self.buttons.onpause())
         self.root_window.bind('<Control-f>', lambda _: self.map.on_find())
         self.root_window.bind('<Control-F>', lambda _: self.map.on_go_to_page())
         self.root_window.bind('<Control-g>', lambda _: self.map.on_scroll_to_current())
+        self.root_window.bind('<F11>', lambda _: self.view_menu.toggle_fullscreen())
         self.root_window.bind('<Escape>', self.on_esc)
 
         if filename is not None:

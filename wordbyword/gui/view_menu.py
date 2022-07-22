@@ -21,6 +21,14 @@ class ViewMenu(UIComponent):
     def _on_change(self):
         self.trigger('view-mode', (self.fullscreen.get(), self.focus.get()))
 
+    def toggle_focus(self):
+        self.focus.set(not self.focus.get())
+        self._on_change()
+    
+    def toggle_fullscreen(self):
+        self.fullscreen.set(not self.fullscreen.get())
+        self._on_change()
+
     def update_state(self, state):
         self._lang = state.language
         self.parent_menu.entryconfig(self.menu_entry, label=getTranslationKey(self._lang, 'menu.view'))

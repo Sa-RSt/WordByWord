@@ -40,6 +40,9 @@ class Display(UIComponent):
         self._lbl.place(relx=0, rely=0, relheight=1, relwidth=1)
         self._special_lbl = Label(self._iframe, textvariable=self._special_contentvar, style='Display.TLabel', anchor='center')
 
+        self._lbl.bind('<Double-Button-1>', lambda _: self.trigger('double-click'))
+        self._special_lbl.bind('<Double-Button-1>', lambda _: self.trigger('double-click'))
+
         self.on('update-state', self.update_state)
         self.on('focus-mode', self.update_focus_mode)
         self.on('font-size-change', self.set_focus_mode_font_size)
