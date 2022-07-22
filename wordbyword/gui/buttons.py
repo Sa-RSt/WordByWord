@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from ..internationalization import getTranslationKey
 from . import UIComponent
 from tkinter import Frame, Button
 from ..assets import AssetManager
+from tktooltip import ToolTip
 
 from . import colors
 
@@ -24,6 +26,7 @@ class ButtonsComponent(UIComponent):
         self._factor = 1
         self._nightmode = False
         self._asset_manager = asset_manager
+        self._lang = 'en'
 
         self.frame = Frame(tkparent)
 
@@ -32,24 +35,29 @@ class ButtonsComponent(UIComponent):
         self.btn_rewind = Button(self.btn_rw_outer, image=default_imgs.get_prefixed_image('rewind.png'), command=self.onrewind)
         self.btn_rewind.grid(row=0, column=0, sticky='nsew', padx=2, pady=2)
         self.btn_rw_outer.grid(row=0, column=0, sticky='nsew')
+        ToolTip(self.btn_rewind, lambda: getTranslationKey(self._lang, 'tt.fastRewind'), 1)
 
         self.btn_srw_outer = Frame(self.frame)
         self.btn_slowrewind = Button(self.btn_srw_outer, image=default_imgs.get_prefixed_image('slow_rewind.png'), command=self.on05rewind)
         self.btn_slowrewind.grid(row=0, column=0, sticky='nsew', padx=2, pady=2)
         self.btn_srw_outer.grid(row=0, column=1, sticky='nsew')
+        ToolTip(self.btn_slowrewind, lambda: getTranslationKey(self._lang, 'tt.slowRewind'), 1)
 
         self.btn_pause = Button(self.frame, image=default_imgs.get_prefixed_image('pause.png'), command=self.onpause)
         self.btn_pause.grid(row=0, column=2, sticky='nsew')
+        ToolTip(self.btn_pause, lambda: getTranslationKey(self._lang, 'tt.playOrPause'), 1)
 
         self.btn_sf_outer = Frame(self.frame)
         self.btn_slowforward = Button(self.btn_sf_outer, image=default_imgs.get_prefixed_image('slow_forward.png'), command=self.on05forward)
         self.btn_slowforward.grid(row=0, column=0, sticky='nsew', padx=2, pady=2)
         self.btn_sf_outer.grid(row=0, column=3, sticky='nsew')
+        ToolTip(self.btn_slowforward, lambda: getTranslationKey(self._lang, 'tt.slowForward'), 1)
 
         self.btn_ff_outer = Frame(self.frame)
         self.btn_fastforward = Button(self.btn_ff_outer, image=default_imgs.get_prefixed_image('fast_forward.png'), command=self.onfastforward)
         self.btn_fastforward.grid(row=0, column=0, sticky='nsew', padx=2, pady=2)
         self.btn_ff_outer.grid(row=0, column=4, sticky='nsew')
+        ToolTip(self.btn_fastforward, lambda: getTranslationKey(self._lang, 'tt.fastForward'), 1)
 
         self.on('update-state', self.update_state)
     
@@ -123,6 +131,7 @@ class ButtonsComponent(UIComponent):
     
     def update_state(self, state):
         self._nightmode = state.theme
+        self._lang = state.language
         self.factor = self.factor  # Updates the colors of the outer frames
 
         theme_imgs = self._asset_manager.theme(state.theme)

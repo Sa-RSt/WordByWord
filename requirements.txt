@@ -5,4 +5,5 @@ pdfminer.six==20201018
 pycparser==2.20
 six==1.15.0
 sortedcontainers==2.3.0
+tkinter-tooltip==2.1.0
 tkScrolledFrame==1.0.4

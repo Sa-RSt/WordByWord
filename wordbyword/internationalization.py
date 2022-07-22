@@ -200,6 +200,27 @@ _keys = {
         'en': 'Successfully saved!',
         'pt': 'Salvo com sucesso!'
     },
+    ### [ Tooltips ] ###
+    'tt.fastRewind': {
+        'en': 'Rewind (fast)',
+        'pt': 'Retroceder (rápido)'
+    },
+    'tt.slowRewind': {
+        'en': 'Rewind (slow)',
+        'pt': 'Retroceder (lento)'
+    },
+    'tt.fastForward': {
+        'en': 'Fast forward',
+        'pt': 'Avançar rapidamente'
+    },
+    'tt.slowForward': {
+        'en': 'Slow down',
+        'pt': 'Avançar lentamente'
+    },
+    'tt.playOrPause': {
+        'en': 'Play/pause',
+        'pt': 'Pausar/reproduzir'
+    },
     ### [ Theme toggle ] ###
     'themeToggle.changeTheme': {
         'en': 'Toggle night mode',
