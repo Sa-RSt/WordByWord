@@ -20,14 +20,14 @@ class Display(UIComponent):
     UI component that displays the tokens.
     '''
 
-    def __init__(self, tkparent):
+    def __init__(self, tkparent, focus_font_sz):
         super(Display, self).__init__()
 
         self._content = ''
         self._lang = 'en'
         self._font = 'serif'
         self._focus = False
-        self._focus_font_sz = 45
+        self._focus_font_sz = focus_font_sz
         self._contentvar = StringVar()
         self._special_contentvar = StringVar()
 

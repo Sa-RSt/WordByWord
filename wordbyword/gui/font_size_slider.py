@@ -25,7 +25,7 @@ class FontSizeSlider(UIComponent):
         self.scale.set(sz)  # Implicitly triggers _command and the 'font-size-change' event
 
     def _command(self, val):
-        self.trigger('font-size-change', val)
+        self.trigger('font-size-change', int(val))
     
     def _side_button_callback(self, amount):
         def _fun():

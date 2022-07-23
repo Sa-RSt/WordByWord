@@ -19,7 +19,7 @@ SETTINGS_FILE = os.path.expanduser('~/.wbwr_cfg')
 DEFAULT_SETTINGS = {
     'blink_warning_shown': False,
     'theme': 1,
-    'speed': 300,
+    'speed': 125,
     'cpf': 20,
     'language': _lang,
     'font': 'serif',

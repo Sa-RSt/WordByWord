@@ -95,7 +95,7 @@ class App(UIComponent):
         self.filepicker.on('file-change', self.get_file)
         self.filepicker.on('will-pick-file', self.will_pick_file)
 
-        self.display = Display(self.frame)
+        self.display = Display(self.frame, Settings['font_size_focus'])
         self.display.on('double-click', lambda: self.view_menu.toggle_focus())
         self.display.get_tk_widget().grid(row=1, column=0, columnspan=3)
 
