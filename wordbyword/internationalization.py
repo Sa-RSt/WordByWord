@@ -8,6 +8,18 @@ SUPPORTED_LANGUAGES = {
     'pt': 'Português'
 }
 
+about_en = '''
+This app, better suited for non-fiction content, intends to boost the user's focus and reading speed.
+
+Copyright © Samuel R. Steidle
+'''.strip()
+
+about_pt = '''
+Esse programa, que é mais adequado a conteúdo de não-ficção, tem como objetivo aumentar o foco do usuário e sua velocidade de leitura.
+
+Copyright © Samuel R. Steidle
+'''.strip()
+
 _keys = {
     ### [ Global ] ###
     'ok': {
@@ -46,8 +58,8 @@ _keys = {
         'pt': 'Sobre o WordByWord'
     },
     'about.body': {
-        'en': 'TODO',
-        'pt': 'TODO'
+        'en': about_en,
+        'pt': about_pt
     },
     ### [ Health & Safety ] ###
     'healthAndSafety.buttonText': {
