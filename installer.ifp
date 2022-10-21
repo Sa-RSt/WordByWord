@@ -3,7 +3,7 @@
 ProjectFileVersion = 1.1
 [General]
 Program name = WordByWord Reader
-Program version = 2.0 Alpha
+Program version = 2.1 Alpha
 Windows 2000 = 0
 Windows XP = 1
 Windows Server 2003 = 1
@@ -55,7 +55,7 @@ Time = 2
 PlaySound = 0
 Allow = 0
 [Build]
-File = \\VBOXSVR\WordByWord\dist\WordByWord-Setup-v2.0Alpha.exe
+File = \\VBOXSVR\WordByWord\dist\WordByWord-Setup-2.1Alpha.exe
 SetupIconPath = ..\icons\ancient.ico
 UninstallIconPath = ..\icons\ancient.ico
 CompressionMethod = 0
@@ -76,224 +76,227 @@ Execdlls = 0
 1
 9
 [Files/Dirs]
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\_asyncio.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\_asyncio.pyd
 63.2 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\_bz2.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\_bz2.pyd
 85.2 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\_cffi_backend.cp38-win_amd64.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\_cffi_backend.cp38-win_amd64.pyd
 178 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\_ctypes.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\_ctypes.pyd
 124.2 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\_decimal.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\_decimal.pyd
 262.7 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\_hashlib.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\_hashlib.pyd
 46.2 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\_lzma.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\_lzma.pyd
 159.7 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\_multiprocessing.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\_multiprocessing.pyd
 29.7 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\_overlapped.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\_overlapped.pyd
 45.7 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\_queue.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\_queue.pyd
 28.7 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\_socket.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\_socket.pyd
 78.2 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\_ssl.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\_ssl.pyd
 152.2 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\_tkinter.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\_tkinter.pyd
 64.7 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-console-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-console-l1-1-0.dll
 3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-datetime-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-datetime-l1-1-0.dll
 3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-debug-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-debug-l1-1-0.dll
 3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-errorhandling-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-errorhandling-l1-1-0.dll
 3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-file-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-file-l1-1-0.dll
 5 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-file-l1-2-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-file-l1-2-0.dll
 11.3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-file-l2-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-file-l2-1-0.dll
 11.3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-handle-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-handle-l1-1-0.dll
 3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-heap-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-heap-l1-1-0.dll
 3.5 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-interlocked-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-interlocked-l1-1-0.dll
 3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-libraryloader-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-libraryloader-l1-1-0.dll
 3.5 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-localization-l1-2-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-localization-l1-2-0.dll
 13.8 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-memory-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-memory-l1-1-0.dll
 3.5 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-namedpipe-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-namedpipe-l1-1-0.dll
 3.5 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-processenvironment-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-processenvironment-l1-1-0.dll
 3.5 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-processthreads-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-processthreads-l1-1-0.dll
 4.5 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-processthreads-l1-1-1.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-processthreads-l1-1-1.dll
 11.8 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-profile-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-profile-l1-1-0.dll
 3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-rtlsupport-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-rtlsupport-l1-1-0.dll
 3.5 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-string-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-string-l1-1-0.dll
 3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-synch-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-synch-l1-1-0.dll
 4 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-synch-l1-2-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-synch-l1-2-0.dll
 11.8 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-sysinfo-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-sysinfo-l1-1-0.dll
 4 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-timezone-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-timezone-l1-1-0.dll
 11.3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-core-util-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-core-util-l1-1-0.dll
 3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-crt-conio-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-crt-conio-l1-1-0.dll
 12.3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-crt-convert-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-crt-convert-l1-1-0.dll
 15.3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-crt-environment-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-crt-environment-l1-1-0.dll
 11.8 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-crt-filesystem-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-crt-filesystem-l1-1-0.dll
 13.3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-crt-heap-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-crt-heap-l1-1-0.dll
 11.8 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-crt-locale-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-crt-locale-l1-1-0.dll
 11.8 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-crt-math-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-crt-math-l1-1-0.dll
 20.3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-crt-process-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-crt-process-l1-1-0.dll
 12.3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-crt-runtime-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-crt-runtime-l1-1-0.dll
 15.8 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-crt-stdio-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-crt-stdio-l1-1-0.dll
 17.3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-crt-string-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-crt-string-l1-1-0.dll
 17.3 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-crt-time-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-crt-time-l1-1-0.dll
 13.8 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\api-ms-win-crt-utility-l1-1-0.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\api-ms-win-crt-utility-l1-1-0.dll
 11.8 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\base_library.zip
+\\VBOXSVR\WordByWord\dist\WordByWordReader\base_library.zip
 777.3 KB
 zip
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\libcrypto-1_1.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\libcrypto-1_1.dll
 3.2 MB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\libffi-7.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\libffi-7.dll
 32 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\libssl-1_1.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\libssl-1_1.dll
 674.2 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\pyexpat.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\pyexpat.pyd
 187.7 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\python3.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\python3.dll
 58.2 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\python38.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\python38.dll
 4 MB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\select.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\select.pyd
 27.2 KB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\tcl86t.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\tcl86t.dll
 1.6 MB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\tk86t.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\tk86t.dll
 1.4 MB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\ucrtbase.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\ucrtbase.dll
 975.5 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\unicodedata.pyd
+\\VBOXSVR\WordByWord\dist\WordByWordReader\unicodedata.pyd
 1 MB
 pyd
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\VCRUNTIME140.dll
+\\VBOXSVR\WordByWord\dist\WordByWordReader\VCRUNTIME140.dll
 93.9 KB
 dll
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\WordByWordReader.exe
-2.2 MB
+\\VBOXSVR\WordByWord\dist\WordByWordReader\WordByWordReader.exe
+2.3 MB
 exe
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\assets\
+W:\dist\WordByWordReader\assets\
 N/A
 [Folder]
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\cryptography\
+W:\dist\WordByWordReader\cryptography\
 N/A
 [Folder]
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\cryptography-3.4.7.dist-info\
+W:\dist\WordByWordReader\cryptography-3.4.7.dist-info\
 N/A
 [Folder]
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\pdfminer\
+W:\dist\WordByWordReader\pdfminer\
 N/A
 [Folder]
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\tcl\
+W:\dist\WordByWordReader\tcl\
 N/A
 [Folder]
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\tcl8\
+W:\dist\WordByWordReader\tcl8\
 N/A
 [Folder]
-C:\Users\vm\Desktop\builder\dist\WordByWordReader\tk\
+W:\dist\WordByWordReader\tk\
+N/A
+[Folder]
+W:\dist\WordByWordReader\tkinter_tooltip-2.1.0.dist-info\
 N/A
 [Folder]
 [Licence_Begin]
-86062
+87260
 {\rtf1\fbidis\ansi\ansicpg1252\deff0{\fonttbl{\f0\froman\fprq2\fcharset0 Arial;}{\f1\froman\fprq2\fcharset0 Liberation Serif;}}
 \viewkind4\uc1\pard\ltrpar\nowidctlpar\hyphpar0\lang1046\kerning1\b\f0\fs20 MIT License\b0\f1\fs24\par
 \f0\fs20\par
@@ -1291,50 +1294,56 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\f1\fs
 \f0\fs20 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\f1\fs24\par
 \f0\fs20 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\f1\fs24\par
 \f0\fs20 SOFTWARE.\f1\fs24\par
-\f0\fs20\par
-\f1\fs24\par
+\par
+\b\f0\fs20 tkinter-tooltip package:\b0\f1\fs24\par
+MIT License\par
+\par
+Copyright (c) 2021 gnikit\par
+\par
+Permission is hereby granted, free of charge, to any person obtaining a copy\par
+of this software and associated documentation files (the "Software"), to deal\par
+in the Software without restriction, including without limitation the rights\par
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\par
+copies of the Software, and to permit persons to whom the Software is\par
+furnished to do so, subject to the following conditions:\par
+\par
+The above copyright notice and this permission notice shall be included in all\par
+copies or substantial portions of the Software.\par
+\par
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\par
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\par
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\par
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\par
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\par
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\par
+SOFTWARE.\par
 }
  [Licence_End]
 [Registry]
 HKEY_CLASSES_ROOT
 .jwbw
 
-WordByWordReader
+WordByWord
 1
 HKEY_CLASSES_ROOT
-WordByWordReader
+WordByWord
 
-Saved Progress - Word by Word Reader
+Saved reading progress - Word By Word Reader
 1
 HKEY_CLASSES_ROOT
-WordByWordReader\DefaultIcon
-
-"<InstallPath>\assets\icon.ico",0
-1
-HKEY_CLASSES_ROOT
-WordByWordReader\Shell
-
-
-1
-HKEY_CLASSES_ROOT
-WordByWordReader\Shell\open
-
-
-1
-HKEY_CLASSES_ROOT
-WordByWordReader\Shell\open\command
+WordByWord\Shell\edit\command
 
 "<InstallPath>\WordByWordReader.exe" "%1"
 1
 HKEY_CLASSES_ROOT
-WordByWordReader\Shell\edit
-
-
-1
-HKEY_CLASSES_ROOT
-WordByWordReader\Shell\edit\command
+WordByWord\Shell\open\command
 
 "<InstallPath>\WordByWordReader.exe" "%1"
+1
+HKEY_CLASSES_ROOT
+WordByWord\DefaultIcon
+
+"<InstallPath>\assets\icon.ico,0"
 1
 [Variables]
 [SCs]

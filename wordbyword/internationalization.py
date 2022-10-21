@@ -133,8 +133,8 @@ _keys = {
     },
     ### [ Map ] ###
     'map.toCurrentWord': {
-        'en': 'Scroll to current word (Ctrl+V)',
-        'pt': 'Visualizar a palavra atual (Ctrl+V)'
+        'en': 'Scroll to current word (Ctrl+G)',
+        'pt': 'Visualizar a palavra atual (Ctrl+G)'
     },
     'map.currentPage': {
         'en': 'Page: {}/{}',
