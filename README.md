@@ -7,9 +7,13 @@ The purpose of this prototype was to test basic functionality of the project and
 
 It was only tested on Python 3.8, but it is expected to run on Python 3.6 and all current newer versions.
 
-To start the program, run:
+To install all dependencies, run:
 ```
 pip install -r requirements.txt
+```
+
+To start the program, run:
+```
 python main.py
 ```
 
@@ -23,8 +27,12 @@ O objetivo deste protótipo foi testar a funcionalidade básica do projeto e col
 
 Durante os testes, foi utilizado somente o Python 3.8, mas espera-se que a ferramenta funcione em qualquer versão a partir do Python 3.6.
 
-Para iniciar o programa, execute:
+Para instalar todas as dependências, execute:
 ```
 pip install -r requirements.txt
+```
+
+Para iniciar o programa, execute:
+```
 python main.py
 ```
