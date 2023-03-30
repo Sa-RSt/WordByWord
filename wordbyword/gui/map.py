@@ -60,7 +60,7 @@ class Map(UIComponent):
 
         self.mapframe = Frame(self.frame)
 
-        self.textw = ScrolledText(self.mapframe, state='disabled', cursor='plus', width=100, selectforeground='blue')
+        self.textw = ScrolledText(self.mapframe, state='disabled', cursor='plus', width=50, height=15, selectforeground='blue')
         self.textw.bind('<ButtonRelease-1>', self.on_click)
         self.textw.grid(row=0, column=0, columnspan=4, sticky='nsew')
 
@@ -68,7 +68,7 @@ class Map(UIComponent):
         self.btn_scroll_to_current.grid(row=1, column=0, sticky='w')
 
         self.lbl_page = Label(self.mapframe, font=('', 16, 'bold'))
-        self.lbl_page.grid(row=1, column=1, sticky='w', padx=40)
+        self.lbl_page.grid(row=1, column=1, sticky='w', padx=10)
         
         self.btn_page = Button(self.mapframe, text=getTranslationKey(self._lang, 'map.goToPage.button'), command=self.on_go_to_page)
         self.btn_page.grid(row=1, column=2, sticky='e')
