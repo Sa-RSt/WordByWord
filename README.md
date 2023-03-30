@@ -16,6 +16,8 @@ To install all dependencies, run:
 pip install -r requirements.txt
 ```
 
+You must also install `tkinter` separately, if it is not yet installed.
+
 To start the program, run:
 ```
 python main.py
@@ -39,6 +41,8 @@ Para instalar todas as dependências, execute:
 ```
 pip install -r requirements.txt
 ```
+
+Também é necessário instalar o `tkinter` separadamente, caso não esteja instalado.
 
 Para iniciar o programa, execute:
 ```
